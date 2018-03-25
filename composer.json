@@ -1,0 +1,39 @@
+{
+  "name": "ozerich/yii2-filestorage-db",
+  "description": "Extension for file uploading and attaching to the models",
+  "type": "yii2-extension",
+  "keywords": [
+    "yii2",
+    "extension",
+    "attachment",
+    "file",
+    "upload",
+    "db",
+    "storage"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/Ozerich/yii2-filestorage-db",
+  "authors": [
+    {
+      "name": "Vital Ozierski aka ozerich",
+      "email": "ozicoder@gmail.com",
+      "homepage": "https://blak-it.com",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "php": ">=5.5",
+    "yiisoft/yii2": "~2.0.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "blakit\\filestorage\\": "src"
+    }
+  },
+  "extra": {
+    "asset-installer-paths": {
+      "npm-asset-library": "vendor/npm",
+      "bower-asset-library": "vendor/bower"
+    }
+  }
+}

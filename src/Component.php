@@ -11,11 +11,14 @@ use yii\web\UploadedFile;
 
 class Component extends \yii\base\Component
 {
-    /** @var Scenario[]  */
+    /** @var Scenario[] */
     public $scenarios = [];
 
-    /** @var int  */
+    /** @var int */
     public $max_timeout = 5;
+
+    /** @var string */
+    public $modelClass;
 
     /** @var string[] */
     private $errors = [];
@@ -82,11 +85,13 @@ class Component extends \yii\base\Component
 
     /**
      * @param UploadedFile $file
-     * @param Scenario $scenario
+     * @param string $scenario
      * @return File|null
      */
-    public function createFileFromUploadedFile(UploadedFile $file, Scenario $scenario)
+    public function createFileFromUploadedFile(UploadedFile $file, $scenario)
     {
+        $scenario = self::getScenario($scenario);
+
         if (!$file) {
             return null;
         }
@@ -96,12 +101,12 @@ class Component extends \yii\base\Component
 
     /**
      * @param string $url
-     * @param string $scenario_id
+     * @param string $scenario
      * @return File|null
      */
-    public function createFileFromUrl(string $url, string $scenario_id)
+    public function createFileFromUrl($url, $scenario)
     {
-        $scenario = self::getScenario($scenario_id);
+        $scenario = self::getScenario($scenario);
 
         $p = strrpos($url, '?');
         if ($p !== false) {
@@ -169,7 +174,12 @@ class Component extends \yii\base\Component
     {
         $file_info = ImageService::getImageInfo($file_path);
 
-        $model = new File();
+        if ($this->modelClass) {
+            $model = \Yii::createObject($this->modelClass);
+        } else {
+            $model = new File();
+        }
+
         $model->hash = $file_hash;
         $model->name = $file_name;
         $model->scenario = $scenario->getId();

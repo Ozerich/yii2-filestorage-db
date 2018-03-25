@@ -135,8 +135,10 @@ class Scenario
         return $this->validator;
     }
 
+
     /**
-     * @param array $config
+     * @param $config
+     * @throws InvalidConfigException
      */
     private function createStorage($config)
     {
@@ -144,6 +146,13 @@ class Scenario
             if ($config['type'] == 'file') {
                 $this->storage = new FileStorage($config);
             }
+        } elseif (isset($config['class'])) {
+            $this->storage = \Yii::createObject($config['class'], [$config]);
+            if ($this->storage instanceof BaseStorage == false) {
+                throw new InvalidConfigException('Invalid storage class, it must be inherited from BaseStorage');
+            }
+        } else {
+            throw new InvalidConfigException('Invalid storage config for scenario "' . $this->getId() . '": type or class are not set');
         }
     }
 

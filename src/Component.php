@@ -140,6 +140,36 @@ class Component extends \yii\base\Component
     }
 
     /**
+     * @param $data
+     * @param $file_name
+     * @param $scenario
+     * @return File
+     */
+    public function createFileFromBase64($base64_string, $file_name, $scenario)
+    {
+        list($meta, $content) = explode(';', $base64_string);
+
+        $p = strpos($content, ',');
+        if ($p !== false) {
+            $content = substr($content, $p + 1);
+        }
+
+        $image_raw = base64_decode($content);
+
+        if ($file_name) {
+            $file_ext = end(explode('.', $file_name));
+        } else {
+            $mime_type = substr($meta, 5);
+            $file_ext = ImageService::mime2ext($mime_type);
+        }
+
+        $temp = new TempFile();
+        $temp->write($image_raw);
+
+        return $this->createFile($temp->getPath(), $file_name, $file_ext, $scenario);
+    }
+
+    /**
      * @return array
      */
     public function getLastErrors()
@@ -198,11 +228,13 @@ class Component extends \yii\base\Component
     /**
      * @param $file_path
      * @param $file_ext
-     * @param Scenario $scenario
+     * @param string $scenario
      * @return File
      */
-    private function createFile($file_path, $file_name, $file_ext, Scenario $scenario)
+    private function createFile($file_path, $file_name, $file_ext, $scenario)
     {
+        $scenario = self::getScenario($scenario);
+
         $temp = new TempFile($file_ext);
         $temp->from($file_path);
 

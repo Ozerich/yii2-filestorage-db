@@ -21,8 +21,8 @@ Installation
 
 ```php
     'components' => [
-        media' => [
-            'class' => 'app\components\media\Component',
+        'media' => [
+            'class' => 'blakit\filestorage\Component',
             'scenarios' => [
                 'avatar' => [
                     'storage' => [
@@ -163,5 +163,24 @@ Example usage (load file from url):
     {
        $image = $media->createFileFromUrl($image_url, 'avatar');
        $this->avatar_image_id = $image->id;
+    }
+```
+
+Example usage (load file from base64string):
+
+```php 
+    /* app\controllers\UploadController.php */
+    
+    public function actionImage()
+    {
+        Yii::$app->response->format = 'json';
+        $base64string = Yii::$app->request->post('data');
+        $filename = Yii::$app->request->post('filename');
+     
+        $model = Yii::$app->media->createFileFromBase64($base64string, $filename, 'avatar');
+    
+        return [
+            'image' => $model->toJSON()
+        ];
     }
 ```

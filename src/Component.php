@@ -155,9 +155,13 @@ class Component extends \yii\base\Component
         }
 
         $image_raw = base64_decode($content);
+        $file_ext = null;
 
         if ($file_name) {
-            $file_ext = end(explode('.', $file_name));
+            $file_ext_data = explode('.', $file_name);
+            if (count($file_ext_data) > 1) {
+                $file_ext = $file_ext_data[count($file_ext_data) - 1];
+            }
         } else {
             $mime_type = substr($meta, 5);
             $file_ext = ImageService::mime2ext($mime_type);

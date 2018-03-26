@@ -90,8 +90,6 @@ class Component extends \yii\base\Component
      */
     public function createFileFromUploadedFile(UploadedFile $file, $scenario)
     {
-        $scenario = self::getScenario($scenario);
-
         if (!$file) {
             return null;
         }
@@ -106,8 +104,6 @@ class Component extends \yii\base\Component
      */
     public function createFileFromUrl($url, $scenario)
     {
-        $scenario = self::getScenario($scenario);
-
         $p = strrpos($url, '?');
         if ($p !== false) {
             $url_without_params = substr($url, 0, $p);

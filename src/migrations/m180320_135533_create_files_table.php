@@ -25,7 +25,7 @@ class m180320_135533_create_files_table extends Migration
             'id' => $this->primaryKey(),
             'scenario' => $this->string()->notNull()->defaultValue('default'),
             'hash' => $this->string()->notNull(),
-            'user_id' => $this->integer()->notNull(),
+            'user_id' => $this->integer(),
             'name' => $this->string(),
             'ext' => $this->string()->notNull(),
             'size' => $this->integer()->notNull(),

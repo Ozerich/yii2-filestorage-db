@@ -41,7 +41,7 @@ class File extends \yii\db\ActiveRecord
      */
     public function beforeSave($insert)
     {
-        if ($insert && !Yii::$app->user->isGuest) {
+        if ($insert && Yii::$app->has('user') && !Yii::$app->user->isGuest) {
             $this->user_id = Yii::$app->user->id;
         }
 

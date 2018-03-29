@@ -112,7 +112,7 @@ class FileStorage extends BaseStorage
      */
     public function getFileUrl($file_hash, $file_ext, Thumbnail $thumbnail = null)
     {
-        return Url::to($this->getFilePath($file_hash, $file_ext, $thumbnail));
+        return Url::to($this->getFilePath($file_hash, $file_ext, $thumbnail), true);
     }
 
     /**

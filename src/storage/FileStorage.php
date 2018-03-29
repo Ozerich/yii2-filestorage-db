@@ -42,7 +42,7 @@ class FileStorage extends BaseStorage
      * @param Thumbnail|null $thumbnail
      * @return string
      */
-    public function getFullFilePath($file_hash, $file_ext, Thumbnail $thumbnail = null)
+    public function getSystemFilePath($file_hash, $file_ext, Thumbnail $thumbnail = null)
     {
         return $this->uploadDirPath . $this->getFilePath($file_hash, $file_ext, $thumbnail);
     }
@@ -55,7 +55,7 @@ class FileStorage extends BaseStorage
      */
     public function isFileExists($file_id, $file_ext, Thumbnail $thumbnail = null)
     {
-        return is_file($this->getFilePath($file_id, $file_ext, $thumbnail));
+        return is_file($this->getSystemFilePath($file_id, $file_ext, $thumbnail));
     }
 
     /**
@@ -73,7 +73,7 @@ class FileStorage extends BaseStorage
             mkdir($directory, 0777, true);
         }
 
-        $dest = $this->getFilePath($file_hash, $file_ext, $thumbnail);
+        $dest = $this->getSystemFilePath($file_hash, $file_ext, $thumbnail);
 
         if (is_uploaded_file($src)) {
             return @move_uploaded_file($src, $dest);
@@ -91,7 +91,7 @@ class FileStorage extends BaseStorage
      */
     public function download($file_id, $file_ext, $dest, Thumbnail $thumbnail = null)
     {
-        return copy($this->getFilePath($file_id, $file_ext, $thumbnail), $dest);
+        return copy($this->getSystemFilePath($file_id, $file_ext, $thumbnail), $dest);
     }
 
     /**
@@ -101,7 +101,7 @@ class FileStorage extends BaseStorage
      */
     public function delete($file_id, $file_ext, Thumbnail $thumbnail = null)
     {
-        @unlink($this->getFilePath($file_id, $file_ext, $thumbnail));
+        @unlink($this->getSystemFilePath($file_id, $file_ext, $thumbnail));
     }
 
     /**
@@ -112,7 +112,7 @@ class FileStorage extends BaseStorage
      */
     public function getFileUrl($file_hash, $file_ext, Thumbnail $thumbnail = null)
     {
-        return Url::to($this->getFilePath($file_hash, $file_ext, $thumbnail), true);
+        return Url::to($this->uploadDirUrl . $this->getFilePath($file_hash, $file_ext, $thumbnail), true);
     }
 
     /**

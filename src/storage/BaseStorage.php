@@ -24,4 +24,6 @@ abstract class BaseStorage
     abstract function delete($file_id, $file_ext, Thumbnail $thumbnail = null);
 
     abstract function getFileUrl($file_hash, $file_ext, Thumbnail $thumbnail = null);
+
+    abstract function getFilePath($file_hash, $file_ext, Thumbnail $thumbnail = null);
 }

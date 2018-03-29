@@ -2,6 +2,7 @@
 
 namespace blakit\filestorage\models;
 
+use blakit\filestorage\structures\Scenario;
 use Yii;
 use blakit\filestorage\Component;
 use blakit\filestorage\services\ImageService;
@@ -49,8 +50,8 @@ class File extends \yii\db\ActiveRecord
     }
 
     /**
-     * @param null $thumbnail_alias
-     * @return mixed
+     * @param string|null $thumbnail_alias
+     * @return string
      */
     public function getUrl($thumbnail_alias = null)
     {
@@ -64,6 +65,32 @@ class File extends \yii\db\ActiveRecord
         }
 
         return $scenario->getStorage()->getFileUrl($this->hash, $this->ext);
+    }
+
+    /**
+     * @param string|null $thumbnail_alias
+     * @return string
+     */
+    public function getPath($thumbnail_alias = null)
+    {
+        $scenario = Component::getScenario($this->scenario);
+
+        if ($thumbnail_alias) {
+            $thumbnail = $scenario->getThumbnailByAlias($thumbnail_alias);
+            if ($thumbnail) {
+                return $scenario->getStorage()->getFilePath($this->hash, $this->ext, $thumbnail);
+            }
+        }
+
+        return $scenario->getStorage()->getFilePath($this->hash, $this->ext);
+    }
+
+    /**
+     * @return Scenario
+     */
+    public function getScenario()
+    {
+        return Component::getScenario($this->scenario);
     }
 
     /**

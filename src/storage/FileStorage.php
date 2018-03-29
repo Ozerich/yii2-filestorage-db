@@ -17,15 +17,6 @@ class FileStorage extends BaseStorage
      * @param $file_hash
      * @return string
      */
-    private function getFileDirectory($file_hash)
-    {
-        return $this->uploadDirPath . DIRECTORY_SEPARATOR . $this->getInnerDirectory($file_hash);
-    }
-
-    /**
-     * @param $file_hash
-     * @return string
-     */
     protected function getInnerDirectory($file_hash)
     {
         return implode(DIRECTORY_SEPARATOR, [
@@ -51,9 +42,9 @@ class FileStorage extends BaseStorage
      * @param Thumbnail|null $thumbnail
      * @return string
      */
-    protected function getFilePath($file_hash, $file_ext, Thumbnail $thumbnail = null)
+    public function getFullFilePath($file_hash, $file_ext, Thumbnail $thumbnail = null)
     {
-        return $this->getFileDirectory($file_hash) . DIRECTORY_SEPARATOR . $this->getFileName($file_hash, $file_ext, $thumbnail);
+        return $this->uploadDirPath . $this->getFilePath($file_hash, $file_ext, $thumbnail);
     }
 
     /**
@@ -76,7 +67,7 @@ class FileStorage extends BaseStorage
      */
     public function upload($src, $file_hash, $file_ext, Thumbnail $thumbnail = null)
     {
-        $directory = $this->getFileDirectory($file_hash);
+        $directory = $this->uploadDirPath . DIRECTORY_SEPARATOR . $this->getInnerDirectory($file_hash);
 
         if (!is_dir($directory)) {
             mkdir($directory, 0777, true);
@@ -121,7 +112,17 @@ class FileStorage extends BaseStorage
      */
     public function getFileUrl($file_hash, $file_ext, Thumbnail $thumbnail = null)
     {
-        $url = $this->uploadDirUrl . '/' . $this->getInnerDirectory($file_hash) . '/' . $this->getFileName($file_hash, $file_ext, $thumbnail);
-        return Url::to($url, true);
+        return Url::to($this->getFilePath($file_hash, $file_ext, $thumbnail));
+    }
+
+    /**
+     * @param $file_hash
+     * @param $file_ext
+     * @param Thumbnail|null $thumbnail
+     * @return string
+     */
+    public function getFilePath($file_hash, $file_ext, Thumbnail $thumbnail = null)
+    {
+        return DIRECTORY_SEPARATOR . $this->getInnerDirectory($file_hash) . DIRECTORY_SEPARATOR . $this->getFileName($file_hash, $file_ext, $thumbnail);
     }
 }

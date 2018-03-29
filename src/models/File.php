@@ -86,14 +86,6 @@ class File extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return Scenario
-     */
-    public function getScenario()
-    {
-        return Component::getScenario($this->scenario);
-    }
-
-    /**
      * Full file info in JSON format
      * @return array
      */

@@ -56,6 +56,8 @@ class ImageService
             $image->resizeImage($thumbnail->getWidth(), $thumbnail->getHeight(), 'auto');
         }
 
+        $image->fixExifOrientation();
+
         $image->saveImage($thumbnail_file_path);
     }
 

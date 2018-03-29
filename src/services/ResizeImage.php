@@ -11,11 +11,14 @@ class ResizeImage
     private $imageResized;
 
     private $image_type;
+    private $exif;
 
     function __construct($fileName)
     {
         $image_info = getimagesize($fileName);
         $this->image_type = $image_info[2];
+
+        $this->exif = exif_read_data($fileName);
 
         // *** Open up the file
         $this->image = $this->openImage($fileName);
@@ -219,7 +222,26 @@ class ResizeImage
         imagedestroy($this->imageResized);
     }
 
+    private function getExifRotateAngle()
+    {
+        $orientation = isset($this->exif['Orientation']) ? $this->exif['Orientation'] : null;
 
+        switch ($orientation) {
+            case 3:
+                return 180;
+            case 6:
+                return 270;
+            case 8:
+                return 90;
+            default:
+                return 0;
+        }
+    }
+
+    public function fixExifOrientation()
+    {
+        $this->imageResized = imagerotate($this->imageResized, $this->getExifRotateAngle(), 0);
+    }
 }
 
 ?>

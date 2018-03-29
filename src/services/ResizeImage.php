@@ -18,7 +18,12 @@ class ResizeImage
         $image_info = getimagesize($fileName);
         $this->image_type = $image_info[2];
 
-        $this->exif = exif_read_data($fileName);
+        $imageType = exif_imagetype($fileName);
+        if (in_array($imageType, array(IMAGETYPE_JPEG, IMAGETYPE_TIFF_II, IMAGETYPE_TIFF_MM))) {
+            if ($exifData = @exif_read_data($fileName, null, true, false)) {
+                $this->exif = $exifData;
+            }
+        }
 
         // *** Open up the file
         $this->image = $this->openImage($fileName);

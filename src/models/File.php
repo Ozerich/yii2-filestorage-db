@@ -2,11 +2,10 @@
 
 namespace blakit\filestorage\models;
 
-use blakit\filestorage\structures\Scenario;
-use Yii;
 use blakit\filestorage\Component;
-use blakit\filestorage\services\ImageService;
 use blakit\filestorage\helpers\TempFile;
+use blakit\filestorage\services\ImageService;
+use Yii;
 
 /**
  * This is the model class for table "{{%files}}".
@@ -85,33 +84,39 @@ class File extends \yii\db\ActiveRecord
         return $scenario->getStorage()->getFilePath($this->hash, $this->ext);
     }
 
-    /**
-     * Full file info in JSON format
-     * @return array
-     */
-    public function toJSON()
+    private function prepareJSON($full = false)
     {
         $scenario = Component::getScenario($this->scenario);
 
         $result = [
             'id' => $this->id,
-            'url' => $this->getUrl(),
-            'name' => $this->name,
-            'ext' => $this->ext,
-            'mime' => $this->mime,
-            'size' => $this->size,
+            'url' => $this->getUrl()
         ];
+
+        if ($full) {
+            $result = array_merge($result, [
+                'name' => $this->name,
+                'ext' => $this->ext,
+                'mime' => $this->mime,
+                'size' => $this->size,
+            ]);
+        }
 
         if ($scenario->hasThumnbails()) {
             $thumbs = [
                 [
                     'id' => $this->id . '_ORIGINAL',
-                    'thumb' => 'ORIGINAL',
-                    'width' => $this->width,
-                    'height' => $this->height,
                     'url' => $this->getUrl()
                 ]
             ];
+
+            if ($full) {
+                $thumbs[0] = array_merge($thumbs[0], [
+                    'thumb' => 'ORIGINAL',
+                    'width' => $this->width,
+                    'height' => $this->height,
+                ]);
+            }
 
             Component::staticPrepareThumbnails($this);
 
@@ -124,15 +129,23 @@ class File extends \yii\db\ActiveRecord
 
                 $temp = new TempFile();
                 $scenario->getStorage()->download($this->hash, $this->ext, $temp->getPath(), $thumbnail);
-                $image_info = ImageService::getImageInfo($temp->getPath());
 
-                $thumbs[] = [
+                $item = [
                     'id' => $this->id . '_' . $thumbnail->getThumbId(),
                     'thumb' => $thumbnail->getThumbId(),
-                    'width' => $image_info['width'],
-                    'height' => $image_info['height'],
                     'url' => $url
                 ];
+
+                if ($full) {
+                    $image_info = ImageService::getImageInfo($temp->getPath());
+
+                    $item = array_merge($item, [
+                        'width' => $image_info['width'],
+                        'height' => $image_info['height'],
+                    ]);
+                }
+
+                $thumbs[] = $item;
             }
 
             $result['thumbnails'] = $thumbs;
@@ -140,5 +153,24 @@ class File extends \yii\db\ActiveRecord
 
         return $result;
     }
+
+    /**
+     * Full file info in JSON format
+     * @return array
+     */
+    public function toJson()
+    {
+        return $this->prepareJSON(false);
+    }
+
+    /**
+     * Full file info in JSON format
+     * @return array
+     */
+    public function toFullJSON()
+    {
+        return $this->prepareJSON(true);
+    }
+
 
 }

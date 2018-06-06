@@ -123,6 +123,10 @@ class Component extends \yii\base\Component
             }
         }
 
+        if (strlen($file_ext) > 4) {
+            $file_ext = null;
+        }
+
         try {
             $content = file_get_contents($url);
         } catch (\Exception $ex) {
@@ -131,6 +135,11 @@ class Component extends \yii\base\Component
 
         $temp = new TempFile();
         $temp->write($content);
+
+        if (!$file_ext) {
+            $mime = mime_content_type($temp->getPath());
+            $file_ext = ImageService::mime2ext($mime);
+        }
 
         return $this->createFile($temp->getPath(), $file_name, $file_ext, $scenario);
     }

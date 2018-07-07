@@ -42,20 +42,41 @@ class FileStorage extends BaseStorage
      * @param Thumbnail|null $thumbnail
      * @return string
      */
-    public function getSystemFilePath($file_hash, $file_ext, Thumbnail $thumbnail = null)
+    public function getAbsoluteFilePath($file_hash, $file_ext, Thumbnail $thumbnail = null)
     {
         return $this->uploadDirPath . $this->getFilePath($file_hash, $file_ext, $thumbnail);
     }
 
     /**
-     * @param $file_id
+     * @param $file_hash
+     * @param $file_ext
+     * @param Thumbnail|null $thumbnail
+     * @return string
+     */
+    public function getFileContent($file_hash, $file_ext, Thumbnail $thumbnail = null)
+    {
+        $file_path = $this->getAbsoluteFilePath($file_hash, $file_ext, $thumbnail);
+
+        if (!is_file($file_path)) {
+            return null;
+        }
+
+        $f = fopen($file_path, 'r');
+        $data = fread($f, filesize($file_path));
+        fclose($f);
+
+        return $data;
+    }
+
+    /**
+     * @param $file_hash
      * @param $file_ext
      * @param Thumbnail|null $thumbnail
      * @return bool
      */
-    public function isFileExists($file_id, $file_ext, Thumbnail $thumbnail = null)
+    public function isFileExists($file_hash, $file_ext, Thumbnail $thumbnail = null)
     {
-        return is_file($this->getSystemFilePath($file_id, $file_ext, $thumbnail));
+        return is_file($this->getAbsoluteFilePath($file_hash, $file_ext, $thumbnail));
     }
 
     /**
@@ -73,7 +94,7 @@ class FileStorage extends BaseStorage
             mkdir($directory, 0777, true);
         }
 
-        $dest = $this->getSystemFilePath($file_hash, $file_ext, $thumbnail);
+        $dest = $this->getAbsoluteFilePath($file_hash, $file_ext, $thumbnail);
 
         if (is_uploaded_file($src)) {
             return @move_uploaded_file($src, $dest);
@@ -83,25 +104,25 @@ class FileStorage extends BaseStorage
     }
 
     /**
-     * @param $file_id
+     * @param $file_hash
      * @param $file_ext
      * @param $dest
      * @param Thumbnail|null $thumbnail
      * @return bool
      */
-    public function download($file_id, $file_ext, $dest, Thumbnail $thumbnail = null)
+    public function download($file_hash, $file_ext, $dest, Thumbnail $thumbnail = null)
     {
-        return copy($this->getSystemFilePath($file_id, $file_ext, $thumbnail), $dest);
+        return copy($this->getAbsoluteFilePath($file_hash, $file_ext, $thumbnail), $dest);
     }
 
     /**
-     * @param $file_id
+     * @param $file_hash
      * @param $file_ext
      * @param Thumbnail|null $thumbnail
      */
-    public function delete($file_id, $file_ext, Thumbnail $thumbnail = null)
+    public function delete($file_hash, $file_ext, Thumbnail $thumbnail = null)
     {
-        @unlink($this->getSystemFilePath($file_id, $file_ext, $thumbnail));
+        @unlink($this->getAbsoluteFilePath($file_hash, $file_ext, $thumbnail));
     }
 
     /**

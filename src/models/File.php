@@ -84,6 +84,42 @@ class File extends \yii\db\ActiveRecord
         return $scenario->getStorage()->getFilePath($this->hash, $this->ext);
     }
 
+    /**
+     * @param string|null $thumbnail_alias
+     * @return string
+     */
+    public function getAbsolutePath($thumbnail_alias = null)
+    {
+        $scenario = Component::getScenario($this->scenario);
+
+        if ($thumbnail_alias) {
+            $thumbnail = $scenario->getThumbnailByAlias($thumbnail_alias);
+            if ($thumbnail) {
+                return $scenario->getStorage()->getFilePath($this->hash, $this->ext, $thumbnail);
+            }
+        }
+
+        return $scenario->getStorage()->getAbsoluteFilePath($this->hash, $this->ext);
+    }
+
+    /**
+     * @param string|null $thumbnail_alias
+     * @return string
+     */
+    public function getFileContent($thumbnail_alias = null)
+    {
+        $scenario = Component::getScenario($this->scenario);
+
+        if ($thumbnail_alias) {
+            $thumbnail = $scenario->getThumbnailByAlias($thumbnail_alias);
+            if ($thumbnail) {
+                return $scenario->getStorage()->getFileContent($this->hash, $this->ext, $thumbnail);
+            }
+        }
+
+        return $scenario->getStorage()->getFileContent($this->hash, $this->ext);
+    }
+
     private function prepareJSON($full = false)
     {
         $scenario = Component::getScenario($this->scenario);

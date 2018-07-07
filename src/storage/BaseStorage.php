@@ -15,15 +15,19 @@ abstract class BaseStorage
         }
     }
 
-    abstract function isFileExists($file_id, $file_ext, Thumbnail $thumbnail = null);
+    abstract function isFileExists($file_hash, $file_ext, Thumbnail $thumbnail = null);
 
     abstract function upload($src, $file_hash, $file_ext, Thumbnail $thumbnail = null);
 
-    abstract function download($file_id, $file_ext, $dest, Thumbnail $thumbnail = null);
+    abstract function download($file_hash, $file_ext, $dest, Thumbnail $thumbnail = null);
 
-    abstract function delete($file_id, $file_ext, Thumbnail $thumbnail = null);
+    abstract function delete($file_hash, $file_ext, Thumbnail $thumbnail = null);
 
     abstract function getFileUrl($file_hash, $file_ext, Thumbnail $thumbnail = null);
 
     abstract function getFilePath($file_hash, $file_ext, Thumbnail $thumbnail = null);
+
+    abstract function getAbsoluteFilePath($file_hash, $file_ext, Thumbnail $thumbnail = null);
+
+    abstract function getFileContent($file_hash, $file_ext, Thumbnail $thumbnail = null);
 }

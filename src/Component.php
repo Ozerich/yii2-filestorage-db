@@ -144,6 +144,17 @@ class Component extends \yii\base\Component
         return $this->createFile($temp->getPath(), $file_name, $file_ext, $scenario);
     }
 
+    public function createFileFromRaw($file_raw, $scenario)
+    {
+        $temp = new TempFile();
+        $temp->write($file_raw);
+
+        $mime = mime_content_type($temp->getPath());
+        $file_ext = ImageService::mime2ext($mime);
+
+        return $this->createFile($temp->getPath(), 'unnamed.' . $file_ext, $file_ext, $scenario);
+    }
+
     /**
      * @param $data
      * @param $file_name
@@ -162,7 +173,7 @@ class Component extends \yii\base\Component
         $image_raw = base64_decode($content);
         $file_ext = null;
 
-        if ($file_name) {
+        if (!empty($file_name)) {
             $file_ext_data = explode('.', $file_name);
             if (count($file_ext_data) > 1) {
                 $file_ext = $file_ext_data[count($file_ext_data) - 1];
@@ -247,10 +258,13 @@ class Component extends \yii\base\Component
         $temp = new TempFile($file_ext);
         $temp->from($file_path);
 
-        $validate = $scenario->getValidator()->validate($file_path);
-        if (!$validate) {
-            $this->errors = $scenario->getValidator()->getErrors();
-            return null;
+        $validator = $scenario->getValidator();
+        if ($validator) {
+            $validate = $scenario->getValidator()->validate($file_path);
+            if (!$validate) {
+                $this->errors = $scenario->getValidator()->getErrors();
+                return null;
+            }
         }
 
         $this->errors = [];

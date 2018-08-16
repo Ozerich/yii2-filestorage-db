@@ -6,6 +6,7 @@ use blakit\filestorage\Component;
 use blakit\filestorage\helpers\TempFile;
 use blakit\filestorage\services\ImageService;
 use Yii;
+use yii\web\IdentityInterface;
 
 /**
  * This is the model class for table "{{%files}}".
@@ -41,11 +42,19 @@ class File extends \yii\db\ActiveRecord
      */
     public function beforeSave($insert)
     {
-        if ($insert && Yii::$app->has('user') && !Yii::$app->user->isGuest) {
+        if ($insert && Yii::$app->has('user') && !Yii::$app->user->isGuest && empty($this->user_id)) {
             $this->user_id = Yii::$app->user->id;
         }
 
         return parent::beforeSave($insert);
+    }
+
+    public function setUser(IdentityInterface $user)
+    {
+        $this->user_id = $user->getId();
+        if (!$this->isNewRecord) {
+            $this->save(false, ['user_id']);
+        }
     }
 
     /**

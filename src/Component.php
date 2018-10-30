@@ -97,6 +97,21 @@ class Component extends \yii\base\Component
         return $this->createFile($file->tempName, $file->name, $file->getExtension(), $scenario);
     }
 
+    private function downloadFile($url, $filepath)
+    {
+        set_time_limit(0);
+        $fp = fopen($filepath, 'w+');
+        $ch = curl_init(str_replace(" ", "%20", $url));
+        curl_setopt($ch, CURLOPT_TIMEOUT, 50);
+        curl_setopt($ch, CURLOPT_FILE, $fp);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_exec($ch);
+        curl_close($ch);
+        fclose($fp);
+    }
+
     /**
      * @param string $url
      * @param string $scenario
@@ -127,14 +142,13 @@ class Component extends \yii\base\Component
             $file_ext = null;
         }
 
+        $temp = new TempFile();
+
         try {
-            $content = file_get_contents($url);
+            $this->downloadFile($url, $temp->getPath());
         } catch (\Exception $ex) {
             return null;
         }
-
-        $temp = new TempFile();
-        $temp->write($content);
 
         if (!$file_ext) {
             $mime = mime_content_type($temp->getPath());

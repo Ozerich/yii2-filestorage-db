@@ -2,10 +2,10 @@
 
 namespace blakit\filestorage\services;
 
+use blakit\filestorage\helpers\TempFile;
 use blakit\filestorage\models\File;
 use blakit\filestorage\structures\Scenario;
 use blakit\filestorage\structures\Thumbnail;
-use blakit\filestorage\helpers\TempFile;
 
 class ImageService
 {
@@ -15,7 +15,7 @@ class ImageService
      */
     public static function prepareThumbnails(File $image, Scenario $scenario)
     {
-        if ($scenario->getStorage()->isFileExists($image->hash, $image->ext) == false) {
+        if ($scenario->getStorage()->isFileExists($image->hash, $image->ext, $image->name) == false) {
             return;
         }
 
@@ -24,14 +24,14 @@ class ImageService
 
         $thumbnails = $scenario->getThumbnails();
         foreach ($thumbnails as $thumbnail) {
-            if ($scenario->getStorage()->isFileExists($image->hash, $image->ext, $thumbnail)) {
+            if ($scenario->getStorage()->isFileExists($image->hash, $image->ext, $image->name, $thumbnail)) {
                 continue;
             }
 
             $temp_thumbnail = new TempFile();
             self::prepareThumbnailBySize($temp_file->getPath(), $thumbnail, $temp_thumbnail->getPath());
 
-            $scenario->getStorage()->upload($temp_thumbnail->getPath(), $image->hash, $image->ext, $thumbnail);
+            $scenario->getStorage()->upload($temp_thumbnail->getPath(), $image->hash, $image->ext, $image->name, $thumbnail);
         }
     }
 

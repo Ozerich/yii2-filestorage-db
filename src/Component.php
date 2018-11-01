@@ -79,7 +79,7 @@ class Component extends \yii\base\Component
         $scenario = self::getScenario($file->scenario);
 
         foreach ($scenario->getThumbnails() as $thumbnail) {
-            $scenario->getStorage()->delete($file->hash, $file->ext, $thumbnail);
+            $scenario->getStorage()->delete($file->hash, $file->ext, $file->name, $thumbnail);
         }
     }
 
@@ -170,7 +170,7 @@ class Component extends \yii\base\Component
     }
 
     /**
-     * @param $data
+     * @param $base64_string
      * @param $file_name
      * @param $scenario
      * @return File
@@ -230,6 +230,7 @@ class Component extends \yii\base\Component
     /**
      * @param $file_path
      * @param $file_hash
+     * @param $file_name
      * @param $file_ext
      * @param Scenario $scenario
      * @return File
@@ -261,6 +262,7 @@ class Component extends \yii\base\Component
 
     /**
      * @param $file_path
+     * @param $file_name
      * @param $file_ext
      * @param string $scenario
      * @return File
@@ -284,9 +286,8 @@ class Component extends \yii\base\Component
         $this->errors = [];
 
         $file_ext = strtolower($file_ext);
-
         $file_hash = \Yii::$app->security->generateRandomString(32);
-        $scenario->getStorage()->upload($file_path, $file_hash, $file_ext);
+        $scenario->getStorage()->upload($file_path, $file_hash, $file_ext, $file_name);
 
         $model = $this->createModel($temp->getPath(), $file_hash, $file_name, $file_ext, $scenario);
 

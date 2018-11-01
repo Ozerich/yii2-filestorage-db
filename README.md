@@ -27,6 +27,7 @@ Installation
                 'avatar' => [
                     'storage' => [
                         'type' => 'file',
+                        'saveOriginalFilename' => false,
                         'uploadDirPath' => __DIR__ . '/../../web/uploads/avatars',
                         'uploadDirUrl' => '/uploads/avatars',
                     ],

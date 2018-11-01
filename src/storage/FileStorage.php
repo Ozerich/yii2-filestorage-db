@@ -117,13 +117,14 @@ class FileStorage extends BaseStorage
     /**
      * @param $file_hash
      * @param $file_ext
+     * @param $file_name
      * @param $dest
      * @param Thumbnail|null $thumbnail
      * @return bool
      */
-    public function download($file_hash, $file_ext, $dest, Thumbnail $thumbnail = null)
+    public function download($file_hash, $file_ext, $file_name, $dest, Thumbnail $thumbnail = null)
     {
-        return copy($this->getAbsoluteFilePath($file_hash, $file_ext, $thumbnail), $dest);
+        return copy($this->getAbsoluteFilePath($file_hash, $file_ext, $file_name, $thumbnail), $dest);
     }
 
     /**

@@ -22,7 +22,7 @@ abstract class BaseStorage
 
     abstract function upload($src, $file_hash, $file_ext, $file_name, Thumbnail $thumbnail = null);
 
-    abstract function download($file_hash, $file_ext, $dest, Thumbnail $thumbnail = null);
+    abstract function download($file_hash, $file_ext, $file_name, $dest, Thumbnail $thumbnail = null);
 
     abstract function delete($file_hash, $file_ext, $file_name, Thumbnail $thumbnail = null);
 

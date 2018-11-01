@@ -20,7 +20,8 @@ class ImageService
         }
 
         $temp_file = new TempFile();
-        $scenario->getStorage()->download($image->hash, $image->ext, $temp_file->getPath());
+
+        $scenario->getStorage()->download($image->hash, $image->ext, $image->name, $temp_file->getPath());
 
         $thumbnails = $scenario->getThumbnails();
         foreach ($thumbnails as $thumbnail) {

@@ -115,9 +115,10 @@ class Component extends \yii\base\Component
     /**
      * @param string $url
      * @param string $scenario
+     * @param string|null $file_name
      * @return File|null
      */
-    public function createFileFromUrl($url, $scenario)
+    public function createFileFromUrl($url, $scenario, $file_name = null)
     {
         $p = strrpos($url, '?');
         if ($p !== false) {
@@ -126,20 +127,27 @@ class Component extends \yii\base\Component
             $url_without_params = $url;
         }
 
-        $file_name = $file_ext = null;
+        $file_ext = null;
 
-        $p = strrpos($url_without_params, '.');
-        if ($p !== null) {
-            $file_ext = substr($url_without_params, $p + 1);
+        if ($file_name === null) {
+            $p = strrpos($url_without_params, '.');
+            if ($p !== null) {
+                $file_ext = substr($url_without_params, $p + 1);
 
-            $p = strrpos($url_without_params, '/');
-            if ($p !== false) {
-                $file_name = substr($url_without_params, $p + 1);
+                $p = strrpos($url_without_params, '/');
+                if ($p !== false) {
+                    $file_name = substr($url_without_params, $p + 1);
+                }
             }
-        }
+        } else {
+            $p = strrpos($file_name, '.');
+            if ($p !== false) {
+                $file_ext = substr($url_without_params, $p + 1);
+            }
 
-        if (strlen($file_ext) > 4) {
-            $file_ext = null;
+            if (strlen($file_ext) > 4) {
+                $file_ext = null;
+            }
         }
 
         $temp = new TempFile();

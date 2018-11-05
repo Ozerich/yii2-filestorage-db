@@ -142,7 +142,7 @@ class Component extends \yii\base\Component
         } else {
             $p = strrpos($file_name, '.');
             if ($p !== false) {
-                $file_ext = substr($url_without_params, $p + 1);
+                $file_ext = substr($file_name, $p + 1);
             }
 
             if (strlen($file_ext) > 4) {

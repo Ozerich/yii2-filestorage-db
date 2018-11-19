@@ -161,10 +161,10 @@ class File extends \yii\db\ActiveRecord
                     continue;
                 }
 
-                $url = $scenario->getStorage()->getFileUrl($this->hash, $this->ext,  $this->name, $thumbnail);
+                $url = $scenario->getStorage()->getFileUrl($this->hash, $this->ext, $this->name, $thumbnail);
 
                 $temp = new TempFile();
-                $scenario->getStorage()->download($this->hash, $this->ext, $temp->getPath(), $thumbnail);
+                $scenario->getStorage()->download($this->hash, $this->ext, $this->name, $temp->getPath(), $thumbnail);
 
                 $item = [
                     'id' => $this->id . '_' . $thumbnail->getThumbId(),

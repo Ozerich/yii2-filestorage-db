@@ -284,7 +284,7 @@ class Component extends \yii\base\Component
 
         $validator = $scenario->getValidator();
         if ($validator) {
-            $validate = $scenario->getValidator()->validate($file_path);
+            $validate = $scenario->getValidator()->validate($file_path, $file_name);
             if (!$validate) {
                 $this->errors = $scenario->getValidator()->getErrors();
                 return null;

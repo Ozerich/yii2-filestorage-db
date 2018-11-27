@@ -11,6 +11,8 @@ use yii\web\UploadedFile;
 
 class Component extends \yii\base\Component
 {
+    const LOG_CATEGORY = 'yii2-filestorage-db';
+
     /** @var Scenario[] */
     public $scenarios = [];
 
@@ -100,6 +102,7 @@ class Component extends \yii\base\Component
     private function downloadFile($url, $filepath)
     {
         set_time_limit(0);
+
         $fp = fopen($filepath, 'w+');
         $ch = curl_init(str_replace(" ", "%20", $url));
         curl_setopt($ch, CURLOPT_TIMEOUT, 50);
@@ -108,8 +111,11 @@ class Component extends \yii\base\Component
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         curl_exec($ch);
+        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
         fclose($fp);
+
+        \Yii::info('Download file ' . $url . ' to ' . $filepath . ': response code ' . $http_code, Component::LOG_CATEGORY);
     }
 
     /**
@@ -155,6 +161,9 @@ class Component extends \yii\base\Component
         try {
             $this->downloadFile($url, $temp->getPath());
         } catch (\Exception $ex) {
+            \Yii::error('Download file at url ' . $url . ' exception', Component::LOG_CATEGORY);
+            \Yii::error($ex, Component::LOG_CATEGORY);
+
             return null;
         }
 

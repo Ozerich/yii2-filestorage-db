@@ -74,10 +74,9 @@ class Validator
 
     /**
      * @param string $file_path
-     * @param string $file_name
      * @return bool
      */
-    public function validate($file_path, $file_name)
+    public function validate($file_path)
     {
         if (!is_file($file_path)) {
             return false;
@@ -90,9 +89,9 @@ class Validator
         if ($this->checkExtensionByMimeType) {
             $extension = $this->getExtensionByMime(mime_content_type($file_path));
         } else {
-            $p = strrpos($file_name, '.');
+            $p = strrpos($file_path, '.');
             if ($p !== false) {
-                $extension = substr($file_name, $p + 1);
+                $extension = substr($file_path, $p + 1);
             } else {
                 $extension = "";
             }

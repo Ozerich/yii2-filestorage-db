@@ -59,11 +59,11 @@ class File extends \yii\db\ActiveRecord
         if ($thumbnail_alias) {
             $thumbnail = $scenario->getThumbnailByAlias($thumbnail_alias);
             if ($thumbnail) {
-                return $scenario->getStorage()->getFileUrl($this->hash, $this->ext, $this->name, $thumbnail);
+                return $scenario->getStorage()->getFileUrl($this->hash, $this->ext, $thumbnail);
             }
         }
 
-        return $scenario->getStorage()->getFileUrl($this->hash, $this->ext, $this->name);
+        return $scenario->getStorage()->getFileUrl($this->hash, $this->ext);
     }
 
     /**
@@ -81,7 +81,7 @@ class File extends \yii\db\ActiveRecord
             }
         }
 
-        return $scenario->getStorage()->getFilePath($this->hash, $this->ext, $this->name);
+        return $scenario->getStorage()->getFilePath($this->hash, $this->ext);
     }
 
     /**
@@ -99,7 +99,7 @@ class File extends \yii\db\ActiveRecord
             }
         }
 
-        return $scenario->getStorage()->getAbsoluteFilePath($this->hash, $this->ext, $this->name);
+        return $scenario->getStorage()->getAbsoluteFilePath($this->hash, $this->ext);
     }
 
     /**
@@ -113,11 +113,11 @@ class File extends \yii\db\ActiveRecord
         if ($thumbnail_alias) {
             $thumbnail = $scenario->getThumbnailByAlias($thumbnail_alias);
             if ($thumbnail) {
-                return $scenario->getStorage()->getFileContent($this->hash, $this->ext, $this->name, $thumbnail);
+                return $scenario->getStorage()->getFileContent($this->hash, $this->ext, $thumbnail);
             }
         }
 
-        return $scenario->getStorage()->getFileContent($this->hash, $this->ext, $this->name);
+        return $scenario->getStorage()->getFileContent($this->hash, $this->ext);
     }
 
     private function prepareJSON($full = false)
@@ -157,14 +157,14 @@ class File extends \yii\db\ActiveRecord
             Component::staticPrepareThumbnails($this);
 
             foreach ($scenario->getThumbnails() as $thumbnail) {
-                if ($scenario->getStorage()->isFileExists($this->hash, $this->ext, $this->name, $thumbnail) == false) {
+                if ($scenario->getStorage()->isFileExists($this->hash, $this->ext, $thumbnail) == false) {
                     continue;
                 }
 
-                $url = $scenario->getStorage()->getFileUrl($this->hash, $this->ext, $this->name, $thumbnail);
+                $url = $scenario->getStorage()->getFileUrl($this->hash, $this->ext, $thumbnail);
 
                 $temp = new TempFile();
-                $scenario->getStorage()->download($this->hash, $this->ext, $this->name, $temp->getPath(), $thumbnail);
+                $scenario->getStorage()->download($this->hash, $this->ext, $temp->getPath(), $thumbnail);
 
                 $item = [
                     'id' => $this->id . '_' . $thumbnail->getThumbId(),

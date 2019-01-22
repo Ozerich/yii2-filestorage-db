@@ -24,6 +24,8 @@ class Scenario
     /** @var BaseStorage */
     private $storage;
 
+    private $fixOrientation = true;
+
     /**
      * Scenario constructor.
      * @param $id
@@ -46,6 +48,10 @@ class Scenario
 
         if (isset($config['thumbnails'])) {
             $this->setThumbnails($config['thumbnails']);
+        }
+
+        if(isset($config['fixOrientation'])){
+            $this->fixOrientation = (bool)$config['fixOrientation'];
         }
     }
 
@@ -162,5 +168,13 @@ class Scenario
     public function getStorage()
     {
         return $this->storage;
+    }
+
+    /**
+     * @return bool
+     */
+    public function shouldFixOrientation()
+    {
+        return $this->fixOrientation;
     }
 }

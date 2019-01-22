@@ -5,14 +5,13 @@ namespace blakit\filestorage;
 use blakit\filestorage\helpers\TempFile;
 use blakit\filestorage\models\File;
 use blakit\filestorage\services\ImageService;
+use blakit\filestorage\services\ProcessImage;
 use blakit\filestorage\structures\Scenario;
 use yii\base\InvalidArgumentException;
 use yii\web\UploadedFile;
 
 class Component extends \yii\base\Component
 {
-    const LOG_CATEGORY = 'yii2-filestorage-db';
-
     /** @var Scenario[] */
     public $scenarios = [];
 
@@ -81,7 +80,7 @@ class Component extends \yii\base\Component
         $scenario = self::getScenario($file->scenario);
 
         foreach ($scenario->getThumbnails() as $thumbnail) {
-            $scenario->getStorage()->delete($file->hash, $file->ext, $file->name, $thumbnail);
+            $scenario->getStorage()->delete($file->hash, $file->ext, $thumbnail);
         }
     }
 
@@ -102,7 +101,6 @@ class Component extends \yii\base\Component
     private function downloadFile($url, $filepath)
     {
         set_time_limit(0);
-
         $fp = fopen($filepath, 'w+');
         $ch = curl_init(str_replace(" ", "%20", $url));
         curl_setopt($ch, CURLOPT_TIMEOUT, 50);
@@ -111,20 +109,16 @@ class Component extends \yii\base\Component
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         curl_exec($ch);
-        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
         fclose($fp);
-
-        \Yii::info('Download file ' . $url . ' to ' . $filepath . ': response code ' . $http_code, Component::LOG_CATEGORY);
     }
 
     /**
      * @param string $url
      * @param string $scenario
-     * @param string|null $file_name
      * @return File|null
      */
-    public function createFileFromUrl($url, $scenario, $file_name = null)
+    public function createFileFromUrl($url, $scenario)
     {
         $p = strrpos($url, '?');
         if ($p !== false) {
@@ -133,27 +127,20 @@ class Component extends \yii\base\Component
             $url_without_params = $url;
         }
 
-        $file_ext = null;
+        $file_name = $file_ext = null;
 
-        if ($file_name === null) {
-            $p = strrpos($url_without_params, '.');
-            if ($p !== null) {
-                $file_ext = substr($url_without_params, $p + 1);
+        $p = strrpos($url_without_params, '.');
+        if ($p !== null) {
+            $file_ext = substr($url_without_params, $p + 1);
 
-                $p = strrpos($url_without_params, '/');
-                if ($p !== false) {
-                    $file_name = substr($url_without_params, $p + 1);
-                }
-            }
-        } else {
-            $p = strrpos($file_name, '.');
+            $p = strrpos($url_without_params, '/');
             if ($p !== false) {
-                $file_ext = substr($file_name, $p + 1);
+                $file_name = substr($url_without_params, $p + 1);
             }
+        }
 
-            if (strlen($file_ext) > 4) {
-                $file_ext = null;
-            }
+        if (strlen($file_ext) > 4) {
+            $file_ext = null;
         }
 
         $temp = new TempFile();
@@ -161,9 +148,6 @@ class Component extends \yii\base\Component
         try {
             $this->downloadFile($url, $temp->getPath());
         } catch (\Exception $ex) {
-            \Yii::error('Download file at url ' . $url . ' exception', Component::LOG_CATEGORY);
-            \Yii::error($ex, Component::LOG_CATEGORY);
-
             return null;
         }
 
@@ -187,7 +171,7 @@ class Component extends \yii\base\Component
     }
 
     /**
-     * @param $base64_string
+     * @param $data
      * @param $file_name
      * @param $scenario
      * @return File
@@ -247,7 +231,6 @@ class Component extends \yii\base\Component
     /**
      * @param $file_path
      * @param $file_hash
-     * @param $file_name
      * @param $file_ext
      * @param Scenario $scenario
      * @return File
@@ -279,7 +262,6 @@ class Component extends \yii\base\Component
 
     /**
      * @param $file_path
-     * @param $file_name
      * @param $file_ext
      * @param string $scenario
      * @return File
@@ -293,21 +275,25 @@ class Component extends \yii\base\Component
 
         $validator = $scenario->getValidator();
         if ($validator) {
-            $validate = $scenario->getValidator()->validate($file_path, $file_name);
+            $validate = $scenario->getValidator()->validate($file_path);
             if (!$validate) {
                 $this->errors = $scenario->getValidator()->getErrors();
                 return null;
             }
         }
 
+        if ($scenario->shouldFixOrientation()) {
+            $processImage = new ProcessImage($file_path);
+            $processImage->fixOrientation();
+        }
+
         $this->errors = [];
 
         $file_ext = strtolower($file_ext);
         $file_hash = \Yii::$app->security->generateRandomString(32);
-        $scenario->getStorage()->upload($file_path, $file_hash, $file_ext, $file_name);
 
+        $scenario->getStorage()->upload($file_path, $file_hash, $file_ext);
         $model = $this->createModel($temp->getPath(), $file_hash, $file_name, $file_ext, $scenario);
-
         $this->prepareThumbnails($model);
 
         return $model;

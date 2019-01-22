@@ -16,7 +16,7 @@ class OutputRawAction extends Action
         /** @var File $model */
         $model = File::findOne($id);
         if (!$model) {
-            throw new NotFoundHttpException(\Yii::t('errors', 'Файл не найден'));
+            throw new NotFoundHttpException(\Yii::t('errors', 'File not found'));
         }
 
         header('Content-Type: ' . $model->mime);

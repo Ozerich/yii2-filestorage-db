@@ -48,28 +48,32 @@ class ProcessImage
             return;
         }
 
-        $exif = exif_read_data($this->file_name);
+        try {
+            $exif = exif_read_data($this->file_name);
 
-        if (isset($exif['Orientation']) && !empty($exif['Orientation'])) {
-            switch ($exif['Orientation']) {
-                case 3:
-                    $image = imagerotate($image, 180, 0);
-                    break;
+            if (isset($exif['Orientation']) && !empty($exif['Orientation'])) {
+                switch ($exif['Orientation']) {
+                    case 3:
+                        $image = imagerotate($image, 180, 0);
+                        break;
 
-                case 6:
-                    $image = imagerotate($image, -90, 0);
-                    break;
+                    case 6:
+                        $image = imagerotate($image, -90, 0);
+                        break;
 
-                case 8:
-                    $image = imagerotate($image, 90, 0);
-                    break;
+                    case 8:
+                        $image = imagerotate($image, 90, 0);
+                        break;
 
-                default:
-                    return;
+                    default:
+                        return;
+                }
             }
-        }
 
-        $this->saveImage($image, $this->file_name);
+            $this->saveImage($image, $this->file_name);
+        } catch (\Exception $exception) {
+
+        }
     }
 }
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace blakit\filestorage\helpers;
+namespace ozerich\filestorage\helpers;
 
 class TempFile
 {

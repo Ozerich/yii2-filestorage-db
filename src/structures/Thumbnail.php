@@ -1,6 +1,6 @@
 <?php
 
-namespace blakit\filestorage\structures;
+namespace ozerich\filestorage\structures;
 
 class Thumbnail
 {

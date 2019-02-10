@@ -1,10 +1,10 @@
 <?php
 
-namespace blakit\filestorage\models;
+namespace ozerich\filestorage\models;
 
-use blakit\filestorage\Component;
-use blakit\filestorage\helpers\TempFile;
-use blakit\filestorage\services\ImageService;
+use ozerich\filestorage\FileStorage;
+use ozerich\filestorage\helpers\TempFile;
+use ozerich\filestorage\services\ImageService;
 use Yii;
 
 /**
@@ -54,7 +54,7 @@ class File extends \yii\db\ActiveRecord
      */
     public function getUrl($thumbnail_alias = null)
     {
-        $scenario = Component::getScenario($this->scenario);
+        $scenario = FileStorage::getScenario($this->scenario);
 
         if ($thumbnail_alias) {
             $thumbnail = $scenario->getThumbnailByAlias($thumbnail_alias);
@@ -72,7 +72,7 @@ class File extends \yii\db\ActiveRecord
      */
     public function getPath($thumbnail_alias = null)
     {
-        $scenario = Component::getScenario($this->scenario);
+        $scenario = FileStorage::getScenario($this->scenario);
 
         if ($thumbnail_alias) {
             $thumbnail = $scenario->getThumbnailByAlias($thumbnail_alias);
@@ -90,7 +90,7 @@ class File extends \yii\db\ActiveRecord
      */
     public function getAbsolutePath($thumbnail_alias = null)
     {
-        $scenario = Component::getScenario($this->scenario);
+        $scenario = FileStorage::getScenario($this->scenario);
 
         if ($thumbnail_alias) {
             $thumbnail = $scenario->getThumbnailByAlias($thumbnail_alias);
@@ -108,7 +108,7 @@ class File extends \yii\db\ActiveRecord
      */
     public function getFileContent($thumbnail_alias = null)
     {
-        $scenario = Component::getScenario($this->scenario);
+        $scenario = FileStorage::getScenario($this->scenario);
 
         if ($thumbnail_alias) {
             $thumbnail = $scenario->getThumbnailByAlias($thumbnail_alias);
@@ -122,7 +122,7 @@ class File extends \yii\db\ActiveRecord
 
     private function prepareJSON($full = false)
     {
-        $scenario = Component::getScenario($this->scenario);
+        $scenario = FileStorage::getScenario($this->scenario);
 
         $result = [
             'id' => $this->id,
@@ -154,7 +154,7 @@ class File extends \yii\db\ActiveRecord
                 ]);
             }
 
-            Component::staticPrepareThumbnails($this);
+            FileStorage::staticPrepareThumbnails($this);
 
             foreach ($scenario->getThumbnails() as $thumbnail) {
                 if ($scenario->getStorage()->isFileExists($this->hash, $this->ext, $thumbnail) == false) {

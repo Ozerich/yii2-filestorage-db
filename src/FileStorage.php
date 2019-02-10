@@ -1,16 +1,16 @@
 <?php
 
-namespace blakit\filestorage;
+namespace ozerich\filestorage;
 
-use blakit\filestorage\helpers\TempFile;
-use blakit\filestorage\models\File;
-use blakit\filestorage\services\ImageService;
-use blakit\filestorage\services\ProcessImage;
-use blakit\filestorage\structures\Scenario;
+use ozerich\filestorage\helpers\TempFile;
+use ozerich\filestorage\models\File;
+use ozerich\filestorage\services\ImageService;
+use ozerich\filestorage\services\ProcessImage;
+use ozerich\filestorage\structures\Scenario;
 use yii\base\InvalidArgumentException;
 use yii\web\UploadedFile;
 
-class Component extends \yii\base\Component
+class FileStorage extends \yii\base\Component
 {
     /** @var Scenario[] */
     public $scenarios = [];

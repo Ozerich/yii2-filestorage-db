@@ -1,6 +1,6 @@
 <?php
 
-namespace blakit\filestorage\services;
+namespace ozerich\filestorage\services;
 
 class ProcessImage
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace blakit\filestorage\storage;
+namespace ozerich\filestorage\storage;
 
-use blakit\filestorage\structures\Thumbnail;
+use ozerich\filestorage\structures\Thumbnail;
 
 abstract class BaseStorage
 {

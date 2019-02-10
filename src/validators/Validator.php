@@ -1,6 +1,6 @@
 <?php
 
-namespace blakit\filestorage\validators;
+namespace ozerich\filestorage\validators;
 
 class Validator
 {

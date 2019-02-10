@@ -1,11 +1,11 @@
 <?php
 
-namespace blakit\filestorage\services;
+namespace ozerich\filestorage\services;
 
-use blakit\filestorage\models\File;
-use blakit\filestorage\structures\Scenario;
-use blakit\filestorage\structures\Thumbnail;
-use blakit\filestorage\helpers\TempFile;
+use ozerich\filestorage\models\File;
+use ozerich\filestorage\structures\Scenario;
+use ozerich\filestorage\structures\Thumbnail;
+use ozerich\filestorage\helpers\TempFile;
 
 class ImageService
 {

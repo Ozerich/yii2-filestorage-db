@@ -1,10 +1,10 @@
 <?php
 
-namespace blakit\filestorage\structures;
+namespace ozerich\filestorage\structures;
 
-use blakit\filestorage\storage\BaseStorage;
-use blakit\filestorage\storage\FileStorage;
-use blakit\filestorage\validators\Validator;
+use ozerich\filestorage\storage\BaseStorage;
+use ozerich\filestorage\storage\FileStorage;
+use ozerich\filestorage\validators\Validator;
 use yii\base\InvalidConfigException;
 
 class Scenario

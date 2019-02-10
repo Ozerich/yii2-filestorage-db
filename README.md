@@ -1,7 +1,7 @@
 Installation
 ------------
 
-1. The preferred way to install this extension is through [composer](http://getcomposer.org/download/).
+The preferred way to install this extension is through [composer](http://getcomposer.org/download/).
 
 	Either run
 	
@@ -17,12 +17,12 @@ Installation
 	
 	to the require section of your `composer.json` file.
 
-2. Add component configuration to your config.php 
+Add component configuration to your config.php 
 
 ```php
     'components' => [
         'media' => [
-            'class' => 'blakit\filestorage\Component',
+            'class' => 'ozerich\filestorage\FileStorage',
             'scenarios' => [
                 'avatar' => [
                     'storage' => [
@@ -71,25 +71,36 @@ Installation
     ]
 ```
 
-3. Apply migrations
+Add media component to bootstrap
 
+```php
+    'config' => [
+        'bootstrap' => [..., 'media'],
+    ]
+```
 
-	```php
-    	'controllerMap' => [
-		...
-		'migrate' => [
-			'class' => 'yii\console\controllers\MigrateController',
-			'migrationNamespaces' => [
-				'blakit\filestorage\migrations',
-			],
-		],
-		...
-    	],
-	```
+Add migrations path to your console config (console.php)
 
-	```
-	php yii migrate/up
-	```
+```php
+    'config' => [
+        'controllerMap' => [
+            'migrate' => [
+                'class' => 'yii\console\controllers\MigrateController',
+                'migrationNamespaces' => [
+                    'ozerich\filestorage\migrations',
+                ],
+            ],
+        ],
+    ]
+```
+	
+		
+Apply migrations
+	
+```
+php yii migrate/up
+```
+	
 
 Usage
 -----

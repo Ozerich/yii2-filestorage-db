@@ -1,8 +1,8 @@
 <?php
 
-namespace blakit\filestorage\actions;
+namespace ozerich\filestorage\actions;
 
-use blakit\filestorage\models\File;
+use ozerich\filestorage\models\File;
 use yii\base\Action;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;

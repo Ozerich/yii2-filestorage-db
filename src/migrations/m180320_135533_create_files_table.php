@@ -1,6 +1,6 @@
 <?php
 
-namespace blakit\filestorage\migrations;
+namespace ozerich\filestorage\migrations;
 
 use yii\db\Migration;
 

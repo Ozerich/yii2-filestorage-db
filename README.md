@@ -3,17 +3,17 @@ Installation
 
 The preferred way to install this extension is through [composer](http://getcomposer.org/download/).
 
-	Either run
-	
-	```
-	php composer.phar require ozerich/yii2-filestorage-db "*"
-	```
-	
-	or add
-	
-	```
-	"ozerich/yii2-filestorage-db": "*"
-	```
+Either run
+
+```
+php composer.phar require ozerich/yii2-filestorage-db "*"
+```
+
+or add
+
+```
+"ozerich/yii2-filestorage-db": "*"
+```
 	
 	to the require section of your `composer.json` file.
 

@@ -14,8 +14,7 @@ or add
 ```
 "ozerich/yii2-filestorage-db": "*"
 ```
-	
-	to the require section of your `composer.json` file.
+to the require section of your `composer.json` file.
 
 Add component configuration to your config.php 
 

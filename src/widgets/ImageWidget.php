@@ -20,11 +20,17 @@ class ImageWidget extends InputWidget
     public $uploadUrl;
 
     /**
-     * @inheritdoc
+     * @var bool
      */
-    public function init()
+    public $multiple = false;
+
+
+    /**
+     * @return string
+     */
+    public function getViewPath()
     {
-        parent::init();
+        return __DIR__ . '/views';
     }
 
     /**
@@ -41,7 +47,27 @@ class ImageWidget extends InputWidget
     public function getImageModel()
     {
         $image_id = $this->getImageId();
+
         return File::findOne($image_id);
+    }
+
+    /**
+     * @return File[]
+     */
+    public function getImageModels()
+    {
+        $result = [];
+
+        $ids = $this->getImageId();
+
+        foreach ($ids as $id) {
+            $file = File::findOne($id);
+            if ($file) {
+                $result[] = $file;
+            }
+        }
+
+        return $result;
     }
 
     /**
@@ -56,9 +82,25 @@ class ImageWidget extends InputWidget
         }
     }
 
-    public function getViewPath()
+    /**
+     * @return int|null|string
+     */
+    private function getValue()
     {
-        return __DIR__ . '/views';
+        $imageId = $this->getImageId();
+        if (empty($imageId)) {
+            return null;
+        }
+
+        if ($this->multiple) {
+            return implode(',', array_map(function (File $file) {
+                return $file->id;
+            }, $this->getImageModels()));
+        }
+
+        $model = $this->getImageModel();
+
+        return $model ? $model->id : null;
     }
 
     public function run()
@@ -69,13 +111,17 @@ class ImageWidget extends InputWidget
         ImageWidgetAsset::register($view);
 
         $view->registerJs("$('#" . $inputId . "').imageInput({
-            uploadUrl: '" . $this->getUploadUrl() . "'
+            uploadUrl: '" . $this->getUploadUrl() . "',
+            multiple: " . ($this->multiple ? 'true' : 'false') . "
         });");
 
         return $this->render('image', [
-            'model' => $this->getImageModel(),
+            'value' => $this->getValue(),
+            'model' => $this->multiple ? null : $this->getImageModel(),
+            'models' => $this->multiple ? $this->getImageModels() : [],
             'inputName' => BaseHtml::getInputName($this->model, $this->attribute),
             'inputId' => $inputId,
+            'multiple' => $this->multiple
         ]);
     }
 }

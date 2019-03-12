@@ -39,6 +39,11 @@ class UploadAction extends Action
         \Yii::$app->end();
     }
 
+    private function getScenario()
+    {
+        return empty($this->scenario) ? \Yii::$app->request->getQueryParam('scenario') : $this->scenario;
+    }
+
     private function getModelFromFileRequest()
     {
         $file = UploadedFile::getInstanceByName($this->field);
@@ -47,7 +52,7 @@ class UploadAction extends Action
             return $this->error('Файл не найден');
         }
 
-        $model = $this->storage()->createFileFromUploadedFile($file, $this->scenario);
+        $model = $this->storage()->createFileFromUploadedFile($file, $this->getScenario());
 
         return $model;
     }
@@ -61,7 +66,7 @@ class UploadAction extends Action
             return $this->error('Файл не найден');
         }
 
-        $model = $this->storage()->createFileFromBase64($file, $filename, $this->scenario);
+        $model = $this->storage()->createFileFromBase64($file, $filename, $this->getScenario());
 
         return $model;
     }

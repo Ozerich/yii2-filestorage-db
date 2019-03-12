@@ -56,6 +56,11 @@ class ImageWidget extends InputWidget
         }
     }
 
+    public function getViewPath()
+    {
+        return __DIR__ . '/views';
+    }
+
     public function run()
     {
         $inputId = BaseHtml::getInputId($this->model, $this->attribute);

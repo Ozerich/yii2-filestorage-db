@@ -56,9 +56,11 @@ class File extends \yii\db\ActiveRecord
     {
         $scenario = FileStorage::getScenario($this->scenario);
 
-        if ($thumbnail_alias) {
+        if ($thumbnail_alias && $scenario->hasThumnbails()) {
             $thumbnail = $scenario->getThumbnailByAlias($thumbnail_alias);
+
             if ($thumbnail) {
+                FileStorage::staticPrepareThumbnails($this, $thumbnail);
                 return $scenario->getStorage()->getFileUrl($this->hash, $this->ext, $thumbnail);
             }
         }
@@ -139,6 +141,8 @@ class File extends \yii\db\ActiveRecord
         }
 
         if ($scenario->hasThumnbails()) {
+            FileStorage::staticPrepareThumbnails($this);
+
             $thumbs = [
                 [
                     'id' => $this->id . '_ORIGINAL',
@@ -153,8 +157,6 @@ class File extends \yii\db\ActiveRecord
                     'height' => $this->height,
                 ]);
             }
-
-            FileStorage::staticPrepareThumbnails($this);
 
             foreach ($scenario->getThumbnails() as $thumbnail) {
                 if ($scenario->getStorage()->isFileExists($this->hash, $this->ext, $thumbnail) == false) {

@@ -2,18 +2,19 @@
 
 namespace ozerich\filestorage\services;
 
+use ozerich\filestorage\helpers\TempFile;
 use ozerich\filestorage\models\File;
 use ozerich\filestorage\structures\Scenario;
 use ozerich\filestorage\structures\Thumbnail;
-use ozerich\filestorage\helpers\TempFile;
 
 class ImageService
 {
     /**
      * @param File $image
      * @param Scenario $scenario
+     * @param Thumbnail|null $thumbnail
      */
-    public static function prepareThumbnails(File $image, Scenario $scenario)
+    public static function prepareThumbnails(File $image, Scenario $scenario, ?Thumbnail $thumbnail = null)
     {
         if ($scenario->getStorage()->isFileExists($image->hash, $image->ext) == false) {
             return;
@@ -22,7 +23,7 @@ class ImageService
         $temp_file = new TempFile();
         $scenario->getStorage()->download($image->hash, $image->ext, $temp_file->getPath());
 
-        $thumbnails = $scenario->getThumbnails();
+        $thumbnails = $thumbnail ? [$thumbnail] : $scenario->getThumbnails();
         foreach ($thumbnails as $thumbnail) {
             if ($scenario->getStorage()->isFileExists($image->hash, $image->ext, $thumbnail)) {
                 continue;

@@ -7,6 +7,7 @@ use ozerich\filestorage\models\File;
 use ozerich\filestorage\services\ImageService;
 use ozerich\filestorage\services\ProcessImage;
 use ozerich\filestorage\structures\Scenario;
+use ozerich\filestorage\structures\Thumbnail;
 use yii\base\InvalidArgumentException;
 use yii\web\UploadedFile;
 
@@ -214,8 +215,9 @@ class FileStorage extends \yii\base\Component
 
     /**
      * @param File $file
+     * @param Thumbnail|null $thumbnail
      */
-    public static function staticPrepareThumbnails(File $file)
+    public static function staticPrepareThumbnails(File $file, ?Thumbnail $thumbnail = null)
     {
         if (!self::$start_first) {
             self::$start_first = time();
@@ -225,7 +227,7 @@ class FileStorage extends \yii\base\Component
             return;
         }
 
-        ImageService::prepareThumbnails($file, self::getScenario($file->scenario));
+        ImageService::prepareThumbnails($file, self::getScenario($file->scenario), $thumbnail);
     }
 
     /**

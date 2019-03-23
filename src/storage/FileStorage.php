@@ -20,8 +20,8 @@ class FileStorage extends BaseStorage
     protected function getInnerDirectory($file_hash)
     {
         return implode(DIRECTORY_SEPARATOR, [
-            substr($file_hash, 0, 2),
-            substr($file_hash, 2, 2)
+            mb_strtolower(mb_substr($file_hash, 0, 2)),
+            mb_strtolower(mb_substr($file_hash, 2, 2))
         ]);
     }
 

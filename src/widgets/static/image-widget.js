@@ -4,22 +4,23 @@
     return ( ( 'draggable' in div ) || ( 'ondragstart' in div && 'ondrop' in div ) ) && 'FormData' in window && 'FileReader' in window;
   }();
 
-  const FileInput = {
-    $container: null,
+  function FileInput($container, $fileInput) {
+    this.$container = null;
 
-    _subscribers: [],
+    this._subscribers = [];
 
-    subscribe: function (handler) {
+    this.subscribe = function (handler) {
       this._subscribers.push(handler);
-    },
+    };
 
-    trigger: function (data) {
+
+    this.trigger = function (data) {
       this._subscribers.forEach(function (subscriber) {
         subscriber(data);
       });
-    },
+    };
 
-    initDragAndDrop: function () {
+    this.initDragAndDrop = function () {
       const that = this;
 
       ['drag', 'dragstart', 'dragend', 'dragover', 'dragenter', 'dragleave', 'drop'].forEach(function (event) {
@@ -47,12 +48,13 @@
           that.trigger(droppedFiles);
         }
       });
-    },
+    };
 
-    init: function ($container, $fileInput) {
+    this.init = function ($container, $fileInput) {
       const that = this;
 
       this.$container = $container.get(0);
+
       if (isAdvancedUpload) {
         this.initDragAndDrop();
       }
@@ -60,9 +62,12 @@
       $fileInput.on('change', function () {
         that.trigger($(this).get(0).files);
       });
-    }
-  };
 
+      return this;
+    };
+
+    this.init($container, $fileInput);
+  }
 
   function upload(url, files, isMultiple, onSuccess, onError) {
     const formData = new FormData();
@@ -104,7 +109,7 @@
   }
 
 
-  function ImageSingleWidget($container, options) {
+  function ImageSingleWidget($container, fileInput, options) {
     const that = this;
 
     const $containerInput = $container.find('.widget-image__empty');
@@ -159,13 +164,13 @@
       alert(errorMessage);
     };
 
-    FileInput.subscribe(function (images) {
+    fileInput.subscribe(function (images) {
       that.upload(images[0]);
     });
   }
 
 
-  function ImageMultipleWidget($container, options) {
+  function ImageMultipleWidget($container, fileInput, options) {
     const that = this;
 
     const $grid = $container.find('.widget-image__grid');
@@ -218,7 +223,7 @@
 
     that.updateValue();
 
-    FileInput.subscribe(function (images) {
+    fileInput.subscribe(function (images) {
       for (let i = 0; i < images.length; i++) {
         that.upload(images[i]);
       }
@@ -236,15 +241,15 @@
       return;
     }
 
-    FileInput.init(
+    const fileInput = new FileInput(
         $container.find('.widget-image__empty'),
         $fileInput
     );
 
     if (options.multiple) {
-      return new ImageMultipleWidget($container, options);
+      return new ImageMultipleWidget($container, fileInput, options);
     } else {
-      return new ImageSingleWidget($container, options);
+      return new ImageSingleWidget($container, fileInput, options);
     }
   }
 

@@ -66,6 +66,10 @@
       return this;
     };
 
+    this.reset = function(){
+      $fileInput.get(0).value = '';
+    };
+
     this.init($container, $fileInput);
   }
 
@@ -124,6 +128,9 @@
 
     this.setValue = function (value) {
       $container.find('input[type=hidden]').val(value);
+      if(value === null){
+        fileInput.reset();
+      }
     };
 
     this.upload = function (file) {

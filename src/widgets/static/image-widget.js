@@ -182,12 +182,18 @@
 
     const $grid = $container.find('.widget-image__grid');
 
-    this.createElement = function () {
+    this.createElement = function (file) {
+
       const $elem = $grid.find('.widget-image__grid-cell.js-template').clone();
       $elem.removeClass('js-template').show();
       $elem.appendTo($grid);
 
       $grid.removeClass('widget-image__grid--empty');
+
+      if (options.textInputsAttribute) {
+        const filename = file.name;
+        $elem.find('.widget-image__grid-item_text textarea').val(filename.indexOf('.') !== -1 ? filename.substr(0, filename.lastIndexOf('.')) : filename);
+      }
 
       return $elem;
     };
@@ -215,7 +221,8 @@
           $elem.data('file-id', file.id);
 
           if (options.textInputsAttribute) {
-            $elem.find('.widget-image__grid-text textarea').attr('name', options.textInputsAttribute + '[' + file.id + ']');
+            console.log(options);
+            $elem.find('.widget-image__grid-item_text textarea').attr('name', options.textInputsAttribute + '[' + file.id + ']');
           }
 
           that.updateValue();

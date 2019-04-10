@@ -27,10 +27,6 @@ class ImageWidget extends InputWidget
     /** @var string */
     public $textInputsAttribute = null;
 
-    /** @var callable */
-    public $textInputValueFunction = null;
-
-
     /**
      * @return string
      */

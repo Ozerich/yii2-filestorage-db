@@ -6,6 +6,9 @@
  * @var ozerich\filestorage\models\File $model
  * @var boolean $multiple
  * @var string $value
+ * @var string $textInputsAttribute
+ * @var string $textInputsName
+ * @var string $textInputsValue
  */
 ?>
 <div class="widget-image">
@@ -15,6 +18,8 @@
     <? if ($multiple): ?>
         <?= $this->render('_image_multiple', [
             'models' => $models,
+            'textInputsName' => $textInputsName,
+            'textInputsValue' => $textInputsValue,
             'inputId' => $inputId
         ]); ?>
     <? else: ?>

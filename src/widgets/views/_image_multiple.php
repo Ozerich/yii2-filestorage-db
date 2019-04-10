@@ -1,6 +1,8 @@
 <? /**
  * @var \app\models\Image[] $models
  * @var string $inputId
+ * @var string $textInputsAttribute
+ * @var string[] $textInputsValue
  */
 ?>
 
@@ -10,6 +12,11 @@
       <div class="widget-image__grid-item_image">
         <img src="">
       </div>
+        <? if ($textInputsName): ?>
+          <div class="widget-image__grid-item_text">
+            <textarea></textarea>
+          </div>
+        <? endif; ?>
       <div class="widget-image__grid-item-actions">
         <button class="js-widget-image-delete">Удалить</button>
       </div>
@@ -21,6 +28,12 @@
           <div class="widget-image__grid-item_image">
             <img src="<?= $model->getUrl() ?>">
           </div>
+            <? if ($textInputsName): ?>
+              <div class="widget-image__grid-item_text">
+                <textarea
+                    name="<?= $textInputsName ?>[<?= $model->id ?>]"><?= isset($textInputsValue[$model->id]) ? $textInputsValue[$model->id] : '' ?></textarea>
+              </div>
+            <? endif; ?>
           <div class="widget-image__grid-item-actions">
             <button class="js-widget-image-delete">Удалить</button>
           </div>

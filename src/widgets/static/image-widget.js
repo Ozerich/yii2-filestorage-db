@@ -66,7 +66,7 @@
       return this;
     };
 
-    this.reset = function(){
+    this.reset = function () {
       $fileInput.get(0).value = '';
     };
 
@@ -128,7 +128,7 @@
 
     this.setValue = function (value) {
       $container.find('input[type=hidden]').val(value);
-      if(value === null){
+      if (value === null) {
         fileInput.reset();
       }
     };
@@ -213,6 +213,10 @@
           $elem.find('img').attr('src', file.url);
           $elem.find('.widget-image__grid-item').removeClass('widget-image__grid-item--loading');
           $elem.data('file-id', file.id);
+
+          if (options.textInputsAttribute) {
+            $elem.find('.widget-image__grid-text textarea').attr('name', options.textInputsAttribute + '[' + file.id + ']');
+          }
 
           that.updateValue();
         }, function () {

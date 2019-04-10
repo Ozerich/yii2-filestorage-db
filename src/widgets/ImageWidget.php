@@ -24,6 +24,12 @@ class ImageWidget extends InputWidget
      */
     public $multiple = false;
 
+    /** @var string */
+    public $textInputsAttribute = null;
+
+    /** @var callable */
+    public $textInputValueFunction = null;
+
 
     /**
      * @return string
@@ -110,8 +116,14 @@ class ImageWidget extends InputWidget
         $view = $this->getView();
         ImageWidgetAsset::register($view);
 
+        $textInputsName = null;
+        if ($this->textInputsAttribute) {
+            $textInputsName = BaseHtml::getInputName($this->model, $this->textInputsAttribute);
+        }
+
         $view->registerJs("$('#" . $inputId . "').imageInput({
             uploadUrl: '" . $this->getUploadUrl() . "',
+            textInputsAttribute: " . ($this->textInputsAttribute ? "'" . $textInputsName . "'" : 'false') . ",
             multiple: " . ($this->multiple ? 'true' : 'false') . "
         });");
 
@@ -120,6 +132,8 @@ class ImageWidget extends InputWidget
             'model' => $this->multiple ? null : $this->getImageModel(),
             'models' => $this->multiple ? $this->getImageModels() : [],
             'inputName' => BaseHtml::getInputName($this->model, $this->attribute),
+            'textInputsValue' => $this->textInputsAttribute ? $this->model->{$this->textInputsAttribute} : [],
+            'textInputsName' => $textInputsName,
             'inputId' => $inputId,
             'multiple' => $this->multiple
         ]);

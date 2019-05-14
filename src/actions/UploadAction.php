@@ -15,6 +15,8 @@ class UploadAction extends Action
 
     public $field = 'file';
 
+    public $responseFormatter = null;
+
     public $scenario;
 
     /**
@@ -85,10 +87,14 @@ class UploadAction extends Action
         if (!$model) {
             $errors = $this->storage()->getLastErrors();
             if (!empty($errors)) {
-                return $this->error('Ошиибка загрузки файла: ' . array_shift($errors));
+                return $this->error('Ошибка загрузки файла: ' . array_shift($errors));
             } else {
-                return $this->error('Ошиибка загрузки файла: Неизвестная ошибка');
+                return $this->error('Ошибка загрузки файла: Неизвестная ошибка');
             }
+        }
+
+        if ($this->responseFormatter && is_callable($this->responseFormatter)) {
+            return call_user_func($this->responseFormatter, $model);
         }
 
         return [

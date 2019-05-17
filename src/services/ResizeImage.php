@@ -29,12 +29,23 @@ class ResizeImage
         $this->image = $this->openImage($fileName);
 
         if (!$this->image) {
+            $this->setError('Invalid image');
             return;
         }
 
         // *** Get width and height
         $this->width = imagesx($this->image);
         $this->height = imagesy($this->image);
+    }
+
+    private $error = null;
+
+    private function setError($error){
+        $this->error = $error;
+    }
+
+    public function isValid(){
+        return $this->error === null;
     }
 
     ## --------------------------------------------------------

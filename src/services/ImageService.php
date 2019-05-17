@@ -45,7 +45,7 @@ class ImageService
     {
         $image = new ResizeImage($file_path);
 
-        if (!$image) {
+        if (!$image || $image->isValid() == false) {
             return;
         }
 

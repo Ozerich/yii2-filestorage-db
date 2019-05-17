@@ -68,6 +68,8 @@ class ResizeImage
 
         // *** Resample - create image canvas of x, y size
         $this->imageResized = imagecreatetruecolor($optimalWidth, $optimalHeight);
+        imagealphablending( $this->imageResized, false );
+        imagesavealpha( $this->imageResized, true );
         imagecopyresampled($this->imageResized, $this->image, 0, 0, 0, 0, $optimalWidth, $optimalHeight, $this->width, $this->height);
 
 

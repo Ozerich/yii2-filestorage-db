@@ -127,7 +127,7 @@
     });
 
     this.setValue = function (value) {
-      $container.find('input[type=hidden]').val(value);
+      $container.find('input[type=hidden]').val(value).trigger('change');
       if (value === null) {
         fileInput.reset();
       }

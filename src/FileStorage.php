@@ -43,9 +43,20 @@ class FileStorage extends \yii\base\Component
 
         self::$_max_timeout = $this->max_timeout;
 
+        $this->registerTranslations();
+
         parent::init();
     }
 
+    public function registerTranslations()
+    {
+        $i18n = \Yii::$app->i18n;
+        $i18n->translations['filestorage'] = [
+            'class' => 'yii\i18n\PhpMessageSource',
+            'sourceLanguage' => 'en-US',
+            'basePath' => '@vendor/ozerich/yii2-filestorage-db/src/messages',
+        ];
+    }
 
     public function disableThumbnailTimeout()
     {

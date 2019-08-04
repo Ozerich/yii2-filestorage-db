@@ -6,6 +6,7 @@ use ozerich\filestorage\FileStorage;
 use ozerich\filestorage\helpers\TempFile;
 use ozerich\filestorage\services\ImageService;
 use Yii;
+use yii\base\InvalidConfigException;
 
 /**
  * This is the model class for table "{{%files}}".
@@ -41,8 +42,12 @@ class File extends \yii\db\ActiveRecord
      */
     public function beforeSave($insert)
     {
-        if ($insert && Yii::$app->has('user') && !Yii::$app->user->isGuest) {
-            $this->user_id = Yii::$app->user->id;
+        try {
+            if ($insert && Yii::$app->has('user') && !Yii::$app->user->isGuest) {
+                $this->user_id = Yii::$app->user->id;
+            }
+        } catch (InvalidConfigException $exception) {
+
         }
 
         return parent::beforeSave($insert);

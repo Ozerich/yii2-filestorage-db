@@ -99,7 +99,7 @@ class UploadAction extends Action
 
         return [
             'success' => true,
-            'image' => $model->toJSON()
+            'image' => $model->toFullJSON()
         ];
     }
 }

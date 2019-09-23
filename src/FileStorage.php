@@ -274,8 +274,9 @@ class FileStorage extends \yii\base\Component
 
 
     /**
-     * @param $file_path
-     * @param $file_ext
+     * @param string $file_path
+     * @param string $file_name
+     * @param string $file_ext
      * @param string $scenario
      * @return File
      */
@@ -288,7 +289,7 @@ class FileStorage extends \yii\base\Component
 
         $validator = $scenario->getValidator();
         if ($validator) {
-            $validate = $scenario->getValidator()->validate($file_path);
+            $validate = $scenario->getValidator()->validate($file_path, $file_name);
             if (!$validate) {
                 $this->errors = $scenario->getValidator()->getErrors();
                 return null;

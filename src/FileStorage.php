@@ -250,7 +250,11 @@ class FileStorage extends \yii\base\Component
      */
     private function createModel($file_path, $file_hash, $file_name, $file_ext, Scenario $scenario)
     {
-        $file_info = ImageService::getImageInfo($file_path);
+        try {
+            $file_info = ImageService::getImageInfo($file_path);
+        } catch (\Exception $exception) {
+            return null;
+        }
 
         if ($this->modelClass) {
             $model = \Yii::createObject($this->modelClass);
@@ -296,9 +300,13 @@ class FileStorage extends \yii\base\Component
             }
         }
 
-        if ($scenario->shouldFixOrientation()) {
-            $processImage = new ProcessImage($file_path);
-            $processImage->fixOrientation();
+        try {
+            if ($scenario->shouldFixOrientation()) {
+                $processImage = new ProcessImage($file_path);
+                $processImage->fixOrientation();
+            }
+        } catch (\Exception $exception) {
+
         }
 
         $this->errors = [];
@@ -308,6 +316,11 @@ class FileStorage extends \yii\base\Component
 
         $scenario->getStorage()->upload($file_path, $file_hash, $file_ext);
         $model = $this->createModel($temp->getPath(), $file_hash, $file_name, $file_ext, $scenario);
+
+        if (!$model) {
+            return null;
+        }
+
         $this->prepareThumbnails($model);
 
         return $model;

@@ -11,7 +11,6 @@ class ProcessImage
     function __construct($fileName)
     {
         $this->file_name = $fileName;
-
         $image_info = getimagesize($fileName);
         $this->image_type = $image_info[2];
     }

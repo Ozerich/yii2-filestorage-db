@@ -133,17 +133,22 @@ class FileStorage extends BaseStorage
      */
     public function getFileUrl($file_hash, $file_ext, Thumbnail $thumbnail = null)
     {
-        return Url::to($this->uploadDirUrl . $this->getFilePath($file_hash, $file_ext, $thumbnail), true);
+        return Url::to($this->uploadDirUrl . $this->getFilePath($file_hash, $file_ext, $thumbnail, '/'), true);
     }
 
     /**
      * @param $file_hash
      * @param $file_ext
      * @param Thumbnail|null $thumbnail
+     * @param $sep
      * @return string
      */
-    public function getFilePath($file_hash, $file_ext, Thumbnail $thumbnail = null)
+    public function getFilePath($file_hash, $file_ext, Thumbnail $thumbnail = null, $sep = null)
     {
-        return DIRECTORY_SEPARATOR . $this->getInnerDirectory($file_hash) . DIRECTORY_SEPARATOR . $this->getFileName($file_hash, $file_ext, $thumbnail);
+        if ($sep == null) {
+            $sep = DIRECTORY_SEPARATOR;
+        }
+
+        return $sep . $this->getInnerDirectory($file_hash) . $sep . $this->getFileName($file_hash, $file_ext, $thumbnail);
     }
 }

@@ -196,3 +196,35 @@ Example usage (load file from base64string):
         ];
     }
 ```
+
+Console commands
+-----
+
+To use console commands you should create a file *FilestorageController.php* at your *commands* folders.
+
+```
+<?php
+
+namespace app\commands;
+
+class FilestorageController extends \ozerich\filestorage\console\FilestorageController
+{
+    // className of your File model
+    public $modelClass = 'app\models\Image';
+}
+```
+
+If you did not use console commands at your projects, don't forget to confugure them, you should insert code in your `config/console.php`
+
+```
+    'controllerNamespace' => 'app\commands',
+```
+
+List of commands:
+
+1. **php yii filestorage/fix-thumbnails** - Regenerate thumbnails of all images
+
+
+
+
+

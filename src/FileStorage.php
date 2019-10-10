@@ -89,11 +89,7 @@ class FileStorage extends \yii\base\Component
      */
     public function deleteThumbnails(File $file)
     {
-        $scenario = self::getScenario($file->scenario);
-
-        foreach ($scenario->getThumbnails() as $thumbnail) {
-            $scenario->getStorage()->delete($file->hash, $file->ext, $thumbnail);
-        }
+        return self::staticDeleteThumbnails($file);
     }
 
     /**
@@ -227,18 +223,38 @@ class FileStorage extends \yii\base\Component
     /**
      * @param File $file
      * @param Thumbnail|null $thumbnail
+     *
+     * @return bool
      */
     public static function staticPrepareThumbnails(File $file, ?Thumbnail $thumbnail = null)
     {
+        self::staticDeleteThumbnails($file, $thumbnail);
+
         if (!self::$start_first) {
             self::$start_first = time();
         }
 
         if (self::$_max_timeout > 0 && (time() - self::$start_first >= self::$_max_timeout)) {
-            return;
+            if (\Yii::$app instanceof \yii\web\Application) {
+                return;
+            }
         }
 
-        ImageService::prepareThumbnails($file, self::getScenario($file->scenario), $thumbnail);
+        return ImageService::prepareThumbnails($file, self::getScenario($file->scenario), $thumbnail);
+    }
+
+    /**
+     * @param File $file
+     * @param Thumbnail|null $thumbnail
+     */
+    public static function staticDeleteThumbnails(File $file, ?Thumbnail $thumbnail)
+    {
+        $scenario = self::getScenario($file->scenario);
+
+        $thumbnails = $thumbnail ? [$thumbnail] : $scenario->getThumbnails();
+        foreach ($thumbnails as $_thumbnail) {
+            $scenario->getStorage()->delete($file->hash, $file->ext, $_thumbnail);
+        }
     }
 
     /**

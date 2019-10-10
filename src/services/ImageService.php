@@ -13,11 +13,14 @@ class ImageService
      * @param File $image
      * @param Scenario $scenario
      * @param Thumbnail|null $thumbnail
+     *
+     * @return bool
      */
     public static function prepareThumbnails(File $image, Scenario $scenario, ?Thumbnail $thumbnail = null)
     {
+        
         if ($scenario->getStorage()->isFileExists($image->hash, $image->ext) == false) {
-            return;
+            return false;
         }
 
         $temp_file = new TempFile();
@@ -34,6 +37,8 @@ class ImageService
 
             $scenario->getStorage()->upload($temp_thumbnail->getPath(), $image->hash, $image->ext, $thumbnail);
         }
+
+        return true;
     }
 
     /**

@@ -15,10 +15,12 @@ class FilestorageController extends Controller
         echo date('d.m.Y H:i:s') . ' - ' . $message . "\n";
     }
 
-    public function actionFix()
+    public function actionFixThumbnails()
     {
-        /** @var File $items */
-        $items = $this->modelClass::find()->andWhere('id=2998')->all();
+        $className = $this->modelClass;
+
+        /** @var File[] $items */
+        $items = $className::find()->all();
 
         $this->log('Found ' . count($items) . ' items');
 

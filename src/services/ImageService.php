@@ -30,7 +30,7 @@ class ImageService
             }
 
             $temp_thumbnail = new TempFile();
-            self::prepareThumbnailBySize($temp_file->getPath(), $thumbnail, $temp_thumbnail->getPath());
+            self::prepareThumbnailBySize($temp_file->getPath(), $thumbnail, $temp_thumbnail->getPath(), $scenario->getQuality());
 
             $scenario->getStorage()->upload($temp_thumbnail->getPath(), $image->hash, $image->ext, $thumbnail);
         }
@@ -40,8 +40,9 @@ class ImageService
      * @param $file_path
      * @param Thumbnail $thumbnail
      * @param $thumbnail_file_path
+     * @param int $quality
      */
-    private static function prepareThumbnailBySize($file_path, Thumbnail $thumbnail, $thumbnail_file_path)
+    private static function prepareThumbnailBySize($file_path, Thumbnail $thumbnail, $thumbnail_file_path, $quality = 100)
     {
         $image = new ResizeImage($file_path);
 
@@ -59,7 +60,7 @@ class ImageService
 
         $image->fixExifOrientation();
 
-        $image->saveImage($thumbnail_file_path);
+        $image->saveImage($thumbnail_file_path, $quality);
     }
 
     /**

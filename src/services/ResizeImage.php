@@ -208,7 +208,7 @@ class ResizeImage
         imagecopyresampled($this->imageResized, $crop, 0, 0, $cropStartX, $cropStartY, $newWidth, $newHeight, $newWidth, $newHeight);
     }
 
-    public function saveImage($savePath, $imageQuality = "100")
+    public function saveImage($savePath, $imageQuality = 100)
     {
         if (!$this->image) {
             return;

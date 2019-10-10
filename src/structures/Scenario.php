@@ -24,7 +24,11 @@ class Scenario
     /** @var BaseStorage */
     private $storage;
 
+    /** @var bool */
     private $fixOrientation = true;
+
+    /** @var integer */
+    private $quality = 100;
 
     /**
      * Scenario constructor.
@@ -50,8 +54,18 @@ class Scenario
             $this->setThumbnails($config['thumbnails']);
         }
 
-        if(isset($config['fixOrientation'])){
+        if (isset($config['fixOrientation'])) {
             $this->fixOrientation = (bool)$config['fixOrientation'];
+        }
+
+        if (isset($config['quality'])) {
+            if ($config['quality'] > 0 && $config['quality'] < 1) {
+                $this->quality = $config['quality'] * 100;
+            } else if ($config['quality'] > 100 || $config['quality'] < 1) {
+                throw new InvalidConfigException('Quality is invalid');
+            } else {
+                $this->quality = $config['quality'];
+            }
         }
     }
 
@@ -160,6 +174,14 @@ class Scenario
         } else {
             throw new InvalidConfigException('Invalid storage config for scenario "' . $this->getId() . '": type or class are not set');
         }
+    }
+
+    /**
+     * @return int
+     */
+    public function getQuality()
+    {
+        return $this->quality;
     }
 
     /**

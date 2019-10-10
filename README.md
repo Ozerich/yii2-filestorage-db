@@ -52,6 +52,7 @@ Add component configuration to your config.php
                             'exact' => true
                         ],
                     ],
+                    'quality' => 75
                 ],
                 'document' => [
                     'storage' => [

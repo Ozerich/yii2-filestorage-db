@@ -17,9 +17,9 @@ class FileStorage extends BaseStorage
      * @param $file_hash
      * @return string
      */
-    protected function getInnerDirectory($file_hash, $sep = null)
+    protected function getInnerDirectory($file_hash)
     {
-        return implode($sep ? $sep : DIRECTORY_SEPARATOR, [
+        return implode(DIRECTORY_SEPARATOR, [
             mb_strtolower(mb_substr($file_hash, 0, 2)),
             mb_strtolower(mb_substr($file_hash, 2, 2))
         ]);
@@ -149,6 +149,6 @@ class FileStorage extends BaseStorage
             $sep = DIRECTORY_SEPARATOR;
         }
 
-        return $sep . $this->getInnerDirectory($file_hash, $sep) . $sep . $this->getFileName($file_hash, $file_ext, $thumbnail);
+        return $sep . $this->getInnerDirectory($file_hash) . $sep . $this->getFileName($file_hash, $file_ext, $thumbnail);
     }
 }

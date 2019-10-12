@@ -40,11 +40,13 @@ class ResizeImage
 
     private $error = null;
 
-    private function setError($error){
+    private function setError($error)
+    {
         $this->error = $error;
     }
 
-    public function isValid(){
+    public function isValid()
+    {
         return $this->error === null;
     }
 
@@ -77,10 +79,16 @@ class ResizeImage
         $optimalWidth = $optionArray['optimalWidth'];
         $optimalHeight = $optionArray['optimalHeight'];
 
+
         // *** Resample - create image canvas of x, y size
-        $this->imageResized = imagecreatetruecolor($optimalWidth, $optimalHeight);
-        imagealphablending( $this->imageResized, false );
-        imagesavealpha( $this->imageResized, true );
+        if ($this->image_type == IMAGETYPE_PNG) {
+            $this->imageResized = imagecreate($optimalWidth, $optimalHeight);
+        } else {
+            $this->imageResized = imagecreatetruecolor($optimalWidth, $optimalHeight);
+        }
+
+        imagealphablending($this->imageResized, false);
+        imagesavealpha($this->imageResized, true);
         imagecopyresampled($this->imageResized, $this->image, 0, 0, 0, 0, $optimalWidth, $optimalHeight, $this->width, $this->height);
 
 
@@ -204,7 +212,13 @@ class ResizeImage
         $crop = $this->imageResized;
 
         // *** Now crop from center to exact requested size
-        $this->imageResized = imagecreatetruecolor($newWidth, $newHeight);
+
+        if ($this->image_type == IMAGETYPE_PNG) {
+            $this->imageResized = imagecreate($newWidth, $newHeight);
+        } else {
+            $this->imageResized = imagecreatetruecolor($newWidth, $newHeight);
+        }
+
         imagecopyresampled($this->imageResized, $crop, 0, 0, $cropStartX, $cropStartY, $newWidth, $newHeight, $newWidth, $newHeight);
     }
 
@@ -232,7 +246,7 @@ class ResizeImage
                 $invertScaleQuality = 9 - $scaleQuality;
 
                 if (imagetypes() & IMG_PNG) {
-                    imagepng($this->imageResized, $savePath, $invertScaleQuality);
+                    imagepng($this->imageResized, $savePath);
                 }
                 break;
         }

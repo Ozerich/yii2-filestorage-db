@@ -223,12 +223,15 @@ class FileStorage extends \yii\base\Component
     /**
      * @param File $file
      * @param Thumbnail|null $thumbnail
+     * @param bool $forceRegenerate
      *
      * @return bool
      */
-    public static function staticPrepareThumbnails(File $file, ?Thumbnail $thumbnail = null)
+    public static function staticPrepareThumbnails(File $file, ?Thumbnail $thumbnail = null, $forceRegenerate = false)
     {
-        self::staticDeleteThumbnails($file, $thumbnail);
+        if($forceRegenerate) {
+            self::staticDeleteThumbnails($file, $thumbnail);
+        }
 
         if (!self::$start_first) {
             self::$start_first = time();
@@ -247,7 +250,7 @@ class FileStorage extends \yii\base\Component
      * @param File $file
      * @param Thumbnail|null $thumbnail
      */
-    public static function staticDeleteThumbnails(File $file, ?Thumbnail $thumbnail)
+    public static function staticDeleteThumbnails(File $file, ?Thumbnail $thumbnail = null)
     {
         $scenario = self::getScenario($file->scenario);
 

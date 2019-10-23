@@ -30,7 +30,7 @@ class FilestorageController extends Controller
         foreach ($items as $ind => $item) {
             $hasError = false;
             try {
-                if (!FileStorage::staticPrepareThumbnails($item)) {
+                if (!FileStorage::staticPrepareThumbnails($item, null, true)) {
                     $hasError = true;
                 }
 

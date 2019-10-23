@@ -18,7 +18,6 @@ class ImageService
      */
     public static function prepareThumbnails(File $image, Scenario $scenario, ?Thumbnail $thumbnail = null)
     {
-        
         if ($scenario->getStorage()->isFileExists($image->hash, $image->ext) == false) {
             return false;
         }

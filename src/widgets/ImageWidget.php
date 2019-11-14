@@ -63,7 +63,7 @@ class ImageWidget extends InputWidget
         $values = $this->getImageId();
 
         foreach ($values as $value) {
-            $file = $value instanceof  File ? $value : File::findOne($id);
+            $file = $value instanceof File ? $value : File::findOne($value);
             if ($file) {
                 $result[] = $file;
             }

@@ -17,13 +17,13 @@ abstract class BaseStorage
 
     abstract function isFileExists($file_hash, $file_ext, Thumbnail $thumbnail = null);
 
-    abstract function upload($src, $file_hash, $file_ext, Thumbnail $thumbnail = null);
+    abstract function upload($src, $file_hash, $file_ext, Thumbnail $thumbnail = null, $is_2x = false);
 
     abstract function download($file_hash, $file_ext, $dest, Thumbnail $thumbnail = null);
 
     abstract function delete($file_hash, $file_ext, Thumbnail $thumbnail = null);
 
-    abstract function getFileUrl($file_hash, $file_ext, Thumbnail $thumbnail = null);
+    abstract function getFileUrl($file_hash, $file_ext, Thumbnail $thumbnail = null, $is_2x = false);
 
     abstract function getFilePath($file_hash, $file_ext, Thumbnail $thumbnail = null);
 

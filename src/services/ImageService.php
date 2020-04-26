@@ -33,8 +33,13 @@ class ImageService
 
             $temp_thumbnail = new TempFile();
             self::prepareThumbnailBySize($temp_file->getPath(), $thumbnail, $temp_thumbnail->getPath(), $scenario->getQuality());
-
             $scenario->getStorage()->upload($temp_thumbnail->getPath(), $image->hash, $image->ext, $thumbnail);
+
+            if ($thumbnail->is2xSupport()) {
+                $temp_thumbnail = new TempFile(null, $temp_thumbnail->getFilename());
+                self::prepareThumbnailBySize($temp_file->getPath(), $thumbnail, $temp_thumbnail->getPath(), $scenario->getQuality(), true);
+                $scenario->getStorage()->upload($temp_thumbnail->getPath(), $image->hash, $image->ext, $thumbnail, true);
+            }
         }
 
         return true;
@@ -45,8 +50,9 @@ class ImageService
      * @param Thumbnail $thumbnail
      * @param $thumbnail_file_path
      * @param int $quality
+     * @param boolean $is_2x
      */
-    private static function prepareThumbnailBySize($file_path, Thumbnail $thumbnail, $thumbnail_file_path, $quality = 100)
+    private static function prepareThumbnailBySize($file_path, Thumbnail $thumbnail, $thumbnail_file_path, $quality = 100, $is_2x = false)
     {
         $image = new ResizeImage($file_path);
 
@@ -54,12 +60,20 @@ class ImageService
             return;
         }
 
+        $width = $thumbnail->getWidth();
+        $height = $thumbnail->getHeight();
+
+        if ($is_2x) {
+            $width *= 2;
+            $height *= 2;
+        }
+
         if ($thumbnail->getCrop()) {
-            $image->resizeImage($thumbnail->getWidth(), $thumbnail->getHeight(), 'crop');
+            $image->resizeImage($width, $height, 'crop');
         } else if ($thumbnail->getExact()) {
-            $image->resizeImage($thumbnail->getWidth(), $thumbnail->getHeight(), 'exact');
+            $image->resizeImage($width, $height, 'exact');
         } else {
-            $image->resizeImage($thumbnail->getWidth(), $thumbnail->getHeight(), 'auto');
+            $image->resizeImage($width, $height, 'auto');
         }
 
         $image->fixExifOrientation();

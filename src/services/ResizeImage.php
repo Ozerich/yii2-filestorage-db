@@ -81,11 +81,7 @@ class ResizeImage
 
 
         // *** Resample - create image canvas of x, y size
-        if ($this->image_type == IMAGETYPE_PNG) {
-            $this->imageResized = imagecreate($optimalWidth, $optimalHeight);
-        } else {
-            $this->imageResized = imagecreatetruecolor($optimalWidth, $optimalHeight);
-        }
+        $this->imageResized = imagecreatetruecolor($optimalWidth, $optimalHeight);
 
         imagealphablending($this->imageResized, false);
         imagesavealpha($this->imageResized, true);

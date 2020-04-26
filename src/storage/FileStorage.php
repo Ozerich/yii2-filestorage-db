@@ -29,22 +29,26 @@ class FileStorage extends BaseStorage
      * @param $file_hash
      * @param $file_ext
      * @param Thumbnail|null $thumbnail
+     * @param boolean $is_2x
      * @return string
      */
-    protected function getFileName($file_hash, $file_ext, Thumbnail $thumbnail = null)
+    protected function getFileName($file_hash, $file_ext, Thumbnail $thumbnail = null, $is_2x = false)
     {
-        return $file_hash . ($thumbnail ? '_' . $thumbnail->getFilenamePrefix() : '') . '.' . $file_ext;
+        $result = $file_hash . ($thumbnail ? '_' . $thumbnail->getFilenamePrefix() : '') . ($is_2x ? '@2x' : '') . '.' . $file_ext;
+
+        return $result;
     }
 
     /**
      * @param $file_hash
      * @param $file_ext
      * @param Thumbnail|null $thumbnail
+     * @param boolean $is_2x
      * @return string
      */
-    public function getAbsoluteFilePath($file_hash, $file_ext, Thumbnail $thumbnail = null)
+    public function getAbsoluteFilePath($file_hash, $file_ext, Thumbnail $thumbnail = null, $is_2x = false)
     {
-        return $this->uploadDirPath . $this->getFilePath($file_hash, $file_ext, $thumbnail);
+        return $this->uploadDirPath . $this->getFilePath($file_hash, $file_ext, $thumbnail, null, $is_2x);
     }
 
     /**
@@ -84,9 +88,10 @@ class FileStorage extends BaseStorage
      * @param $file_hash
      * @param $file_ext
      * @param Thumbnail|null $thumbnail
+     * @param bool $is_2x
      * @return bool
      */
-    public function upload($src, $file_hash, $file_ext, Thumbnail $thumbnail = null)
+    public function upload($src, $file_hash, $file_ext, Thumbnail $thumbnail = null, $is_2x = false)
     {
         $directory = $this->uploadDirPath . DIRECTORY_SEPARATOR . $this->getInnerDirectory($file_hash);
 
@@ -94,7 +99,8 @@ class FileStorage extends BaseStorage
             mkdir($directory, 0777, true);
         }
 
-        $dest = $this->getAbsoluteFilePath($file_hash, $file_ext, $thumbnail);
+
+        $dest = $this->getAbsoluteFilePath($file_hash, $file_ext, $thumbnail, $is_2x);
 
         if (is_uploaded_file($src)) {
             return @move_uploaded_file($src, $dest);
@@ -129,11 +135,12 @@ class FileStorage extends BaseStorage
      * @param $file_hash
      * @param $file_ext
      * @param Thumbnail|null $thumbnail
+     * @param boolean $is_2x
      * @return string
      */
-    public function getFileUrl($file_hash, $file_ext, Thumbnail $thumbnail = null)
+    public function getFileUrl($file_hash, $file_ext, Thumbnail $thumbnail = null, $is_2x = false)
     {
-        return Url::to($this->uploadDirUrl . $this->getFilePath($file_hash, $file_ext, $thumbnail, '/'), true);
+        return Url::to($this->uploadDirUrl . $this->getFilePath($file_hash, $file_ext, $thumbnail, '/', $is_2x), true);
     }
 
     /**
@@ -141,14 +148,15 @@ class FileStorage extends BaseStorage
      * @param $file_ext
      * @param Thumbnail|null $thumbnail
      * @param $sep
+     * @param bool $is_2x
      * @return string
      */
-    public function getFilePath($file_hash, $file_ext, Thumbnail $thumbnail = null, $sep = null)
+    public function getFilePath($file_hash, $file_ext, Thumbnail $thumbnail = null, $sep = null, $is_2x = false)
     {
         if ($sep == null) {
             $sep = DIRECTORY_SEPARATOR;
         }
 
-        return $sep . $this->getInnerDirectory($file_hash) . $sep . $this->getFileName($file_hash, $file_ext, $thumbnail);
+        return $sep . $this->getInnerDirectory($file_hash) . $sep . $this->getFileName($file_hash, $file_ext, $thumbnail, $is_2x);
     }
 }

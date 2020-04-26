@@ -55,9 +55,10 @@ class File extends \yii\db\ActiveRecord
 
     /**
      * @param string|null $thumbnail_alias
+     * @param boolean $is_2x
      * @return string
      */
-    public function getUrl($thumbnail_alias = null)
+    public function getUrl($thumbnail_alias = null, $is_2x = false)
     {
         $scenario = FileStorage::getScenario($this->scenario);
 
@@ -65,8 +66,8 @@ class File extends \yii\db\ActiveRecord
             $thumbnail = $scenario->getThumbnailByAlias($thumbnail_alias);
 
             if ($thumbnail) {
-                FileStorage::staticPrepareThumbnails($this, $thumbnail);
-                return $scenario->getStorage()->getFileUrl($this->hash, $this->ext, $thumbnail);
+                FileStorage::staticPrepareThumbnails($this, $thumbnail, $is_2x);
+                return $scenario->getStorage()->getFileUrl($this->hash, $this->ext, $thumbnail, $is_2x);
             }
         }
 
@@ -151,7 +152,8 @@ class File extends \yii\db\ActiveRecord
             $thumbs = [
                 [
                     'id' => $this->id . '_ORIGINAL',
-                    'url' => $this->getUrl()
+                    'url' => $this->getUrl(),
+                    'url@2x' => null
                 ]
             ];
 
@@ -169,6 +171,7 @@ class File extends \yii\db\ActiveRecord
                 }
 
                 $url = $scenario->getStorage()->getFileUrl($this->hash, $this->ext, $thumbnail);
+                $url2x = $thumbnail->is2xSupport() ? $scenario->getStorage()->getFileUrl($this->hash, $this->ext, $thumbnail, true) : null;
 
                 $temp = new TempFile();
                 $scenario->getStorage()->download($this->hash, $this->ext, $temp->getPath(), $thumbnail);
@@ -176,7 +179,8 @@ class File extends \yii\db\ActiveRecord
                 $item = [
                     'id' => $this->id . '_' . $thumbnail->getThumbId(),
                     'thumb' => $thumbnail->getThumbId(),
-                    'url' => $url
+                    'url' => $url,
+                    'url@2x' => null
                 ];
 
                 if ($full) {
@@ -215,5 +219,37 @@ class File extends \yii\db\ActiveRecord
         return $this->prepareJSON(true);
     }
 
+    /**
+     * @param array $thumbnails
+     * @return array
+     */
+    public function getUrlsJSON($thumbnails)
+    {
+        $scenario = FileStorage::getScenario($this->scenario);
+        $thumbnails = is_array($thumbnails) ? $thumbnails : func_get_args();
 
+        if (array_keys($thumbnails) !== range(0, count($thumbnails) - 1)) {
+            $thumbnailsArray = $thumbnails;
+        } else {
+            $thumbnailsArray = [];
+            foreach ($thumbnails as $item) {
+                $thumbnailsArray[$item] = $item;
+            }
+        }
+
+        $result = [];
+        foreach ($thumbnailsArray as $resultAlias => $thumbnailAlias) {
+            $thumbnailModel = $scenario->getThumbnailByAlias($thumbnailAlias);
+            if (!$thumbnailModel) {
+                continue;
+            }
+
+            $result[$resultAlias] = $this->getUrl($thumbnailAlias);
+            if ($thumbnailModel->is2xSupport()) {
+                $result[$resultAlias . '@2x'] = $this->getUrl($thumbnailAlias, true);
+            }
+        }
+
+        return $result;
+    }
 }

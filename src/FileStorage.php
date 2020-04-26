@@ -229,7 +229,7 @@ class FileStorage extends \yii\base\Component
      */
     public static function staticPrepareThumbnails(File $file, ?Thumbnail $thumbnail = null, $forceRegenerate = false)
     {
-        if($forceRegenerate) {
+        if ($forceRegenerate) {
             self::staticDeleteThumbnails($file, $thumbnail);
         }
 

@@ -4,20 +4,28 @@ namespace ozerich\filestorage\helpers;
 
 class TempFile
 {
-    /** @var string  */
+    /** @var string */
     private $filename;
 
-    /** @var string  */
+    /** @var string */
     private $extension;
 
     /**
      * TempFile constructor.
      * @param null $file_ext
      */
-    public function __construct($file_ext = null)
+    public function __construct($file_ext = null, $filename = null)
     {
         $this->extension = $file_ext;
-        $this->filename = \Yii::$app->security->generateRandomString();
+        $this->filename = is_null($filename) ? \Yii::$app->security->generateRandomString() : $filename;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFilename()
+    {
+        return $this->filename;
     }
 
     /**

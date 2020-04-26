@@ -16,6 +16,9 @@ class Thumbnail
     /** @var bool */
     private $exact;
 
+    /** @var bool */
+    private $is_2x;
+
     /**
      * Thumbnail constructor.
      * @param int $width
@@ -23,12 +26,13 @@ class Thumbnail
      * @param bool $crop
      * @param bool $exact
      */
-    public function __construct($width = 0, $height = 0, $crop = false, $exact = false)
+    public function __construct($width = 0, $height = 0, $crop = false, $exact = false, $is_2x = false)
     {
         $this->width = $width;
         $this->height = $height;
         $this->crop = $crop;
         $this->exact = $exact;
+        $this->is_2x = $is_2x;
     }
 
     /**
@@ -79,5 +83,12 @@ class Thumbnail
         return ($this->width ? $this->width : 'AUTO') . 'x' . ($this->height ? $this->height : 'AUTO');
     }
 
+    /**
+     * @return bool
+     */
+    public function is2xSupport()
+    {
+        return $this->is_2x;
+    }
 
 }

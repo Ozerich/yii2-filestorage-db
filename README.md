@@ -44,7 +44,9 @@ Add component configuration to your config.php
                         ],
                         [
                             'alias' => 'preview',
-                            'width' => 250
+                            'width' => 250,
+                            'сrop' => true,
+                            '2x' => true
                         ],
                         [
                             'width' => 200,
@@ -139,28 +141,32 @@ Output will be:
                 "thumb": "ORIGINAL",
                 "width": 450,
                 "height": 800,
-                "url": "http://localhost/uploads/images/W7/LK/W7LK3u5LJ7LGtc0nlGOqinl_AVZlinQH.jpg"
+                "url": "http://localhost/uploads/images/W7/LK/W7LK3u5LJ7LGtc0nlGOqinl_AVZlinQH.jpg",
+                "url@2x": null
             },
             {
                  "id": "1_500xAUTO",
                  "thumb": "500xAUTO",
                  "width": 500,
                  "height": 200,
-                 "url": "http://localhost/uploads/images/W7/LK/W7LK3u5LJ7LGtc0nlGOqinl_AVZlinQH_500_AUTO.jpg"
+                 "url": "http://localhost/uploads/images/W7/LK/W7LK3u5LJ7LGtc0nlGOqinl_AVZlinQH_500_AUTO.jpg",
+                 "url@2x": null
             },
             {
                  "id": "1_AUTOx500",
                  "thumb": "AUTOx500",
                  "width": 260,
                  "height": 500,
-                 "url": "http://localhost/uploads/images/W7/LK/W7LK3u5LJ7LGtc0nlGOqinl_AVZlinQH_AUTO_500.jpg"
+                 "url": "http://localhost/uploads/images/W7/LK/W7LK3u5LJ7LGtc0nlGOqinl_AVZlinQH_AUTO_500.jpg",
+                 "url@2x": null
             },
             {
                  "id": "1_200x200",
                  "thumb": "200x200",
                  "width": 200,
                  "height": 200,
-                 "url": "http://localhost/uploads/images/W7/LK/W7LK3u5LJ7LGtc0nlGOqinl_AVZlinQH_200_200.jpg"
+                 "url": "http://localhost/uploads/images/W7/LK/W7LK3u5LJ7LGtc0nlGOqinl_AVZlinQH_200_200.jpg",
+                 "url@2x": "http://localhost/uploads/images/W7/LK/W7LK3u5LJ7LGtc0nlGOqinl_AVZlinQH_200_200@2x.jpg"
             }
         ]
     }

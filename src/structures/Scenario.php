@@ -87,7 +87,8 @@ class Scenario
                 isset($thumbnail['width']) ? $thumbnail['width'] : 0,
                 isset($thumbnail['height']) ? $thumbnail['height'] : 0,
                 isset($thumbnail['crop']) ? $thumbnail['crop'] : false,
-                isset($thumbnail['exact']) ? $thumbnail['exact'] : false
+                isset($thumbnail['exact']) ? $thumbnail['exact'] : false,
+                isset($thumbnail['2x']) ? $thumbnail['2x'] : false,
             );
 
             $this->thumbnails[] = $thumbnail_model;

@@ -67,18 +67,17 @@ class ResizeImage
 
     ## --------------------------------------------------------
 
-    public function resizeImage($newWidth, $newHeight, $option = "auto")
+    public function resizeImage($newWidth, $newHeight, $option = "auto", $forceSize = false)
     {
         if (!$this->image) {
             return;
         }
 
         // *** Get optimal width and height - based on $option
-        $optionArray = $this->getDimensions($newWidth, $newHeight, $option);
+        $optionArray = $this->getDimensions($newWidth, $newHeight, $option, $forceSize);
 
         $optimalWidth = $optionArray['optimalWidth'];
         $optimalHeight = $optionArray['optimalHeight'];
-
 
         // *** Resample - create image canvas of x, y size
         $this->imageResized = imagecreatetruecolor($optimalWidth, $optimalHeight);
@@ -87,16 +86,15 @@ class ResizeImage
         imagesavealpha($this->imageResized, true);
         imagecopyresampled($this->imageResized, $this->image, 0, 0, 0, 0, $optimalWidth, $optimalHeight, $this->width, $this->height);
 
-
         // *** if option is 'crop', then crop too
         if ($option == 'crop') {
-            $this->crop($optimalWidth, $optimalHeight, $newWidth, $newHeight);
+            $this->crop($optimalWidth, $optimalHeight, $newWidth, $newHeight, $forceSize);
         }
     }
 
     ## --------------------------------------------------------
 
-    private function getDimensions($newWidth, $newHeight, $option)
+    private function getDimensions($newWidth, $newHeight, $option, $forceSize = false)
     {
         if ($newWidth == 0) {
             $option = 'portrait';
@@ -128,6 +126,18 @@ class ResizeImage
                 $optimalWidth = $optionArray['optimalWidth'];
                 $optimalHeight = $optionArray['optimalHeight'];
                 break;
+        }
+
+        if ($forceSize == false) {
+            if ($optimalHeight > $this->height) {
+                $optimalWidth /= ($optimalHeight / $this->height);
+                $optimalHeight = $this->height;
+            }
+
+            if ($optimalWidth > $this->width) {
+                $optimalHeight /= ($optimalWidth / $this->width);
+                $optimalWidth = $this->width;
+            }
         }
 
         return array('optimalWidth' => $optimalWidth, 'optimalHeight' => $optimalHeight);
@@ -181,7 +191,6 @@ class ResizeImage
 
     private function getOptimalCrop($newWidth, $newHeight)
     {
-
         $heightRatio = $this->height / $newHeight;
         $widthRatio = $this->width / $newWidth;
 
@@ -199,8 +208,20 @@ class ResizeImage
 
     ## --------------------------------------------------------
 
-    private function crop($optimalWidth, $optimalHeight, $newWidth, $newHeight)
+    private function crop($optimalWidth, $optimalHeight, $newWidth, $newHeight, $forceSize = false)
     {
+        if (!$forceSize) {
+            if ($newWidth > $this->height) {
+                $newWidth /= ($newHeight / $this->height);
+                $newHeight = $this->height;
+            }
+
+            if ($newWidth > $this->width) {
+                $newHeight /= ($newWidth / $this->width);
+                $newWidth = $this->width;
+            }
+        }
+
         // *** Find center - this will be used for the crop
         $cropStartX = ($optimalWidth / 2) - ($newWidth / 2);
         $cropStartY = ($optimalHeight / 2) - ($newHeight / 2);

@@ -19,20 +19,26 @@ class Thumbnail
     /** @var bool */
     private $is_2x;
 
+    /** @var bool */
+    private $is_force;
+
     /**
      * Thumbnail constructor.
      * @param int $width
      * @param int $height
      * @param bool $crop
      * @param bool $exact
+     * @param bool $is_2x
+     * @param bool $is_force
      */
-    public function __construct($width = 0, $height = 0, $crop = false, $exact = false, $is_2x = false)
+    public function __construct($width = 0, $height = 0, $crop = false, $exact = false, $is_2x = false, $is_force = false)
     {
         $this->width = $width;
         $this->height = $height;
         $this->crop = $crop;
         $this->exact = $exact;
         $this->is_2x = $is_2x;
+        $this->is_force = $is_force;
     }
 
     /**
@@ -89,6 +95,14 @@ class Thumbnail
     public function is2xSupport()
     {
         return $this->is_2x;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isForceSize()
+    {
+        return $this->is_force;
     }
 
 }

@@ -46,7 +46,8 @@ Add component configuration to your config.php
                             'alias' => 'preview',
                             'width' => 250,
                             'сrop' => true,
-                            '2x' => true
+                            '2x' => true,
+                            'force' => true
                         ],
                         [
                             'width' => 200,

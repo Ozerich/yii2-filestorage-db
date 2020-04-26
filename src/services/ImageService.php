@@ -69,11 +69,11 @@ class ImageService
         }
 
         if ($thumbnail->getCrop()) {
-            $image->resizeImage($width, $height, 'crop');
+            $image->resizeImage($width, $height, 'crop', $thumbnail->isForceSize());
         } else if ($thumbnail->getExact()) {
-            $image->resizeImage($width, $height, 'exact');
+            $image->resizeImage($width, $height, 'exact', $thumbnail->isForceSize());
         } else {
-            $image->resizeImage($width, $height, 'auto');
+            $image->resizeImage($width, $height, 'auto', $thumbnail->isForceSize());
         }
 
         $image->fixExifOrientation();

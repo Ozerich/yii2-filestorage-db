@@ -40,6 +40,18 @@ class ImageService
                 self::prepareThumbnailBySize($temp_file->getPath(), $thumbnail, $temp_thumbnail->getPath(), $scenario->getQuality(), true);
                 $scenario->getStorage()->upload($temp_thumbnail->getPath(), $image->hash, $image->ext, $thumbnail, true);
             }
+
+            if ($thumbnail->isWebpSupport()) {
+                $temp_thumbnail = new TempFile(null, $temp_thumbnail->getFilename());
+                self::prepareThumbnailBySize($temp_file->getPath(), $thumbnail, $temp_thumbnail->getPath(), $scenario->getQuality(), false, true);
+                $scenario->getStorage()->upload($temp_thumbnail->getPath(), $image->hash, 'webp', $thumbnail, false);
+
+                if ($thumbnail->is2xSupport()) {
+                    $temp_thumbnail = new TempFile(null, $temp_thumbnail->getFilename());
+                    self::prepareThumbnailBySize($temp_file->getPath(), $thumbnail, $temp_thumbnail->getPath(), $scenario->getQuality(), true, true);
+                    $scenario->getStorage()->upload($temp_thumbnail->getPath(), $image->hash, 'webp', $thumbnail, true);
+                }
+            }
         }
 
         return true;
@@ -51,8 +63,9 @@ class ImageService
      * @param $thumbnail_file_path
      * @param int $quality
      * @param boolean $is_2x
+     * @param boolean $is_webp
      */
-    private static function prepareThumbnailBySize($file_path, Thumbnail $thumbnail, $thumbnail_file_path, $quality = 100, $is_2x = false)
+    private static function prepareThumbnailBySize($file_path, Thumbnail $thumbnail, $thumbnail_file_path, $quality = 100, $is_2x = false, $is_webp = false)
     {
         $image = new ResizeImage($file_path);
 
@@ -78,7 +91,12 @@ class ImageService
 
         $image->fixExifOrientation();
 
-        $image->saveImage($thumbnail_file_path, $quality);
+        if ($is_webp) {
+            $image->saveImageAsWebp($thumbnail_file_path, $quality);
+        } else {
+            $image->saveImage($thumbnail_file_path, $quality);
+        }
+
     }
 
     /**

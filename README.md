@@ -47,7 +47,8 @@ Add component configuration to your config.php
                             'width' => 250,
                             'сrop' => true,
                             '2x' => true,
-                            'force' => true
+                            'force' => true,
+                            'webp' => true
                         ],
                         [
                             'width' => 200,

@@ -38,6 +38,13 @@ class ResizeImage
         $this->height = imagesy($this->image);
     }
 
+    function __destruct()
+    {
+        if ($this->imageResized) {
+            imagedestroy($this->imageResized);
+        }
+    }
+
     private $error = null;
 
     private function setError($error)
@@ -267,8 +274,20 @@ class ResizeImage
                 }
                 break;
         }
+    }
 
-        imagedestroy($this->imageResized);
+    /**
+     * @param $savePath
+     * @param int $imageQuality
+     * @return bool
+     */
+    public function saveImageAsWebp($savePath, $imageQuality = 100)
+    {
+        if (!$this->image || !function_exists('imagewebp')) {
+            return false;
+        }
+
+        return imagewebp($this->imageResized, $savePath, $imageQuality);
     }
 
     private function getExifRotateAngle()

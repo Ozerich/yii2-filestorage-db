@@ -56,10 +56,15 @@ class File extends \yii\db\ActiveRecord
     /**
      * @param string|null $thumbnail_alias
      * @param boolean $is_2x
+     * @param boolean $is_webp
      * @return string
      */
-    public function getUrl($thumbnail_alias = null, $is_2x = false)
+    public function getUrl($thumbnail_alias = null, $is_2x = false, $is_webp = false)
     {
+        if ($is_webp && !function_exists('imagewebp')) {
+            return null;
+        }
+        
         $scenario = FileStorage::getScenario($this->scenario);
 
         if ($thumbnail_alias && $scenario->hasThumnbails()) {
@@ -67,7 +72,7 @@ class File extends \yii\db\ActiveRecord
 
             if ($thumbnail) {
                 FileStorage::staticPrepareThumbnails($this, $thumbnail, $is_2x);
-                return $scenario->getStorage()->getFileUrl($this->hash, $this->ext, $thumbnail, $is_2x);
+                return $scenario->getStorage()->getFileUrl($this->hash, $is_webp ? 'webp' : $this->ext, $thumbnail, $is_2x);
             }
         }
 
@@ -172,6 +177,8 @@ class File extends \yii\db\ActiveRecord
 
                 $url = $scenario->getStorage()->getFileUrl($this->hash, $this->ext, $thumbnail);
                 $url2x = $thumbnail->is2xSupport() ? $scenario->getStorage()->getFileUrl($this->hash, $this->ext, $thumbnail, true) : null;
+                $url_webp = $thumbnail->isWebpSupport() ? $scenario->getStorage()->getFileUrl($this->hash, 'webp', $thumbnail, false) : null;
+                $url_webp2x = $thumbnail->isWebpSupport() ? $scenario->getStorage()->getFileUrl($this->hash, 'webp', $thumbnail, true) : null;
 
                 $temp = new TempFile();
                 $scenario->getStorage()->download($this->hash, $this->ext, $temp->getPath(), $thumbnail);
@@ -180,7 +187,9 @@ class File extends \yii\db\ActiveRecord
                     'id' => $this->id . '_' . $thumbnail->getThumbId(),
                     'thumb' => $thumbnail->getThumbId(),
                     'url' => $url,
-                    'url@2x' => null
+                    'url@2x' => null,
+                    'url_webp' => $url_webp,
+                    'url_webp@2x' => $url_webp2x
                 ];
 
                 if ($full) {
@@ -247,6 +256,13 @@ class File extends \yii\db\ActiveRecord
             $result[$resultAlias] = $this->getUrl($thumbnailAlias);
             if ($thumbnailModel->is2xSupport()) {
                 $result[$resultAlias . '@2x'] = $this->getUrl($thumbnailAlias, true);
+            }
+
+            if ($thumbnailModel->isWebpSupport()) {
+                $result[$resultAlias . '_webp'] = $this->getUrl($thumbnailAlias, false, true);
+                if ($thumbnailModel->is2xSupport()) {
+                    $result[$resultAlias . '@2x_webp'] = $this->getUrl($thumbnailAlias, true, true);
+                }
             }
         }
 

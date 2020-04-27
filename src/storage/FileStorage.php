@@ -34,7 +34,7 @@ class FileStorage extends BaseStorage
      */
     protected function getFileName($file_hash, $file_ext, Thumbnail $thumbnail = null, $is_2x = false)
     {
-        $result = $file_hash . ($thumbnail ? '_' . $thumbnail->getFilenamePrefix() : '') . ($is_2x ? '@2x' : '') . '.' . $file_ext;
+        $result = $file_hash . ($thumbnail ? '_' . $thumbnail->getFilenamePrefix() . ($is_2x ? '@2x' : '') : '') . '.' . $file_ext;
 
         return $result;
     }
@@ -136,6 +136,10 @@ class FileStorage extends BaseStorage
     public function deleteAllThumbnails($file_hash)
     {
         $path = $this->uploadDirPath . DIRECTORY_SEPARATOR . $this->getInnerDirectory($file_hash);
+
+        if (!is_dir($path)) {
+            return;
+        }
 
         if ($handle = opendir($path)) {
             while (false !== ($entry = readdir($handle))) {

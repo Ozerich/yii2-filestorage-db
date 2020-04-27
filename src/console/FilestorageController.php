@@ -25,7 +25,7 @@ class FilestorageController extends Controller
         $this->log('Found ' . count($items) . ' items');
 
         foreach ($items as $ind => $item) {
-            FileStorage::staticDeleteThumbnails($item, null, true);
+            FileStorage::staticDeleteThumbnails($item, null);
 
             $this->log('Item ' . ($ind + 1) . ' / ' . count($items) . ' (ID ' . $item->id . ') - Success');
         }
@@ -36,7 +36,7 @@ class FilestorageController extends Controller
         $className = $this->modelClass;
 
         /** @var File[] $items */
-        $items = $id ? $className::findOne($id) : $className::find()->all();
+        $items = $id ? [$className::findOne($id)] : $className::find()->all();
 
         $this->log('Found ' . count($items) . ' items');
 
@@ -44,6 +44,12 @@ class FilestorageController extends Controller
         $failureCount = 0;
 
         foreach ($items as $ind => $item) {
+            if(!$item){
+                $this->log('Item ' . ($ind + 1) . ' / ' . count($items) . ' (ID ' . $item->id . ') - Failure (Item Not Found)');
+                $failureCount++;
+                continue;
+            }
+
             $hasError = false;
             try {
                 if (!FileStorage::staticPrepareThumbnails($item, null, true)) {

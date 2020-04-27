@@ -126,9 +126,38 @@ class FileStorage extends BaseStorage
      * @param $file_ext
      * @param Thumbnail|null $thumbnail
      */
-    public function delete($file_hash, $file_ext, Thumbnail $thumbnail = null)
+    public function delete($file_hash, $file_ext, Thumbnail $thumbnail = null, $is_2x = false)
     {
-        @unlink($this->getAbsoluteFilePath($file_hash, $file_ext, $thumbnail));
+        $this->deleteAllThumbnails($file_hash);
+
+        @unlink($this->getAbsoluteFilePath($file_hash, $file_ext, $thumbnail, $is_2x));
+    }
+
+    public function deleteAllThumbnails($file_hash)
+    {
+        $path = $this->uploadDirPath . DIRECTORY_SEPARATOR . $this->getInnerDirectory($file_hash);
+
+        if ($handle = opendir($path)) {
+            while (false !== ($entry = readdir($handle))) {
+                if ($entry == '.' || $entry == '..') {
+                    continue;
+                }
+
+                if (mb_substr($entry, 0, mb_strlen($file_hash)) != $file_hash) {
+                    continue;
+                }
+
+                $p = mb_strrpos($entry, '.');
+                if ($p === false) {
+                    continue;
+                }
+
+                $filename = mb_substr($entry, 0, $p);
+                if ($filename != $file_hash) {
+                    @unlink($path . DIRECTORY_SEPARATOR . $entry);
+                }
+            }
+        }
     }
 
     /**

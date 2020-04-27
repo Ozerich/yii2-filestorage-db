@@ -22,23 +22,24 @@ class ImageService
             return false;
         }
 
+        $count = 0;
+
         $temp_file = new TempFile();
         $scenario->getStorage()->download($image->hash, $image->ext, $temp_file->getPath());
 
         $thumbnails = $thumbnail ? [$thumbnail] : $scenario->getThumbnails();
         foreach ($thumbnails as $thumbnail) {
-            if ($scenario->getStorage()->isFileExists($image->hash, $image->ext, $thumbnail)) {
-                continue;
-            }
 
-            $temp_thumbnail = new TempFile();
-            self::prepareThumbnailBySize($temp_file->getPath(), $thumbnail, $temp_thumbnail->getPath(), $scenario->getQuality());
-            $scenario->getStorage()->upload($temp_thumbnail->getPath(), $image->hash, $image->ext, $thumbnail);
+            if (!$scenario->getStorage()->isFileExists($image->hash, $image->ext, $thumbnail)) {
+                $temp_thumbnail = new TempFile();
+                self::prepareThumbnailBySize($temp_file->getPath(), $thumbnail, $temp_thumbnail->getPath(), $scenario->getQuality());
+                $scenario->getStorage()->upload($temp_thumbnail->getPath(), $image->hash, $image->ext, $thumbnail);
 
-            if ($thumbnail->is2xSupport()) {
-                $temp_thumbnail = new TempFile(null, $temp_thumbnail->getFilename());
-                self::prepareThumbnailBySize($temp_file->getPath(), $thumbnail, $temp_thumbnail->getPath(), $scenario->getQuality(), true);
-                $scenario->getStorage()->upload($temp_thumbnail->getPath(), $image->hash, $image->ext, $thumbnail, true);
+                if ($thumbnail->is2xSupport()) {
+                    $temp_thumbnail = new TempFile(null, $temp_thumbnail->getFilename());
+                    self::prepareThumbnailBySize($temp_file->getPath(), $thumbnail, $temp_thumbnail->getPath(), $scenario->getQuality(), true);
+                    $scenario->getStorage()->upload($temp_thumbnail->getPath(), $image->hash, $image->ext, $thumbnail, true);
+                }
             }
 
             if ($thumbnail->isWebpSupport()) {

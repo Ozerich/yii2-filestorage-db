@@ -249,6 +249,7 @@ class File extends \yii\db\ActiveRecord
         $result = [];
         foreach ($thumbnailsArray as $resultAlias => $thumbnailAlias) {
             $thumbnailModel = $scenario->getThumbnailByAlias($thumbnailAlias);
+
             if (!$thumbnailModel) {
                 continue;
             }

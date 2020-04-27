@@ -15,12 +15,28 @@ class FilestorageController extends Controller
         echo date('d.m.Y H:i:s') . ' - ' . $message . "\n";
     }
 
-    public function actionFixThumbnails()
+    public function actionDeleteThumbnails()
     {
         $className = $this->modelClass;
 
         /** @var File[] $items */
         $items = $className::find()->all();
+
+        $this->log('Found ' . count($items) . ' items');
+
+        foreach ($items as $ind => $item) {
+            FileStorage::staticDeleteThumbnails($item, null, true);
+
+            $this->log('Item ' . ($ind + 1) . ' / ' . count($items) . ' (ID ' . $item->id . ') - Success');
+        }
+    }
+
+    public function actionFixThumbnails($id = null)
+    {
+        $className = $this->modelClass;
+
+        /** @var File[] $items */
+        $items = $id ? $className::findOne($id) : $className::find()->all();
 
         $this->log('Found ' . count($items) . ' items');
 
@@ -38,7 +54,7 @@ class FilestorageController extends Controller
             }
 
             if ($hasError) {
-                $this->log('Item ' . ($ind + 1) . ' / ' . count($items) . ' (ID ' . $item->id . ') - Failure');
+                $this->log('Item ' . ($ind + 1) . ' / ' . count($items) . ' (ID ' . $item->id . ') - Failure (File Not Found)');
                 $failureCount++;
             } else {
                 $this->log('Item ' . ($ind + 1) . ' / ' . count($items) . ' (ID ' . $item->id . ') - Success');

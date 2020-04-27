@@ -250,14 +250,10 @@ class FileStorage extends \yii\base\Component
      * @param File $file
      * @param Thumbnail|null $thumbnail
      */
-    public static function staticDeleteThumbnails(File $file, ?Thumbnail $thumbnail = null)
+    public static function staticDeleteThumbnails(File $file, ?Thumbnail $thumbnail = null, $deleteAll = false)
     {
         $scenario = self::getScenario($file->scenario);
-
-        $thumbnails = $thumbnail ? [$thumbnail] : $scenario->getThumbnails();
-        foreach ($thumbnails as $_thumbnail) {
-            $scenario->getStorage()->delete($file->hash, $file->ext, $_thumbnail);
-        }
+        $scenario->getStorage()->deleteAllThumbnails($file->hash);
     }
 
     /**

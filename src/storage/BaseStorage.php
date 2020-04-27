@@ -21,7 +21,9 @@ abstract class BaseStorage
 
     abstract function download($file_hash, $file_ext, $dest, Thumbnail $thumbnail = null);
 
-    abstract function delete($file_hash, $file_ext, Thumbnail $thumbnail = null);
+    abstract function delete($file_hash, $file_ext, Thumbnail $thumbnail = null, $is_2x = false);
+
+    abstract function deleteAllThumbnails($file_hash);
 
     abstract function getFileUrl($file_hash, $file_ext, Thumbnail $thumbnail = null, $is_2x = false);
 

@@ -64,14 +64,14 @@ class File extends \yii\db\ActiveRecord
         if ($is_webp && !function_exists('imagewebp')) {
             return null;
         }
-        
+
         $scenario = FileStorage::getScenario($this->scenario);
 
         if ($thumbnail_alias && $scenario->hasThumnbails()) {
             $thumbnail = $scenario->getThumbnailByAlias($thumbnail_alias);
 
             if ($thumbnail) {
-                FileStorage::staticPrepareThumbnails($this, $thumbnail, $is_2x);
+                FileStorage::staticPrepareThumbnails($this, $thumbnail);
                 return $scenario->getStorage()->getFileUrl($this->hash, $is_webp ? 'webp' : $this->ext, $thumbnail, $is_2x);
             }
         }

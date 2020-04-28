@@ -158,7 +158,7 @@ class ResizeImage
             }
         }
 
-        return array('optimalWidth' => $optimalWidth, 'optimalHeight' => $optimalHeight);
+        return array('optimalWidth' => ceil($optimalWidth), 'optimalHeight' => ceil($optimalHeight));
     }
 
     ## --------------------------------------------------------
@@ -241,8 +241,8 @@ class ResizeImage
         }
 
         // *** Find center - this will be used for the crop
-        $cropStartX = ($optimalWidth / 2) - ($newWidth / 2);
-        $cropStartY = ($optimalHeight / 2) - ($newHeight / 2);
+        $cropStartX = max(0, ((int)$optimalWidth - $newWidth) / 2);
+        $cropStartY = max(0, ((int)$optimalHeight - $newHeight) / 2);
 
         $crop = $this->imageResized;
 

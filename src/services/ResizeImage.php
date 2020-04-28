@@ -38,6 +38,16 @@ class ResizeImage
         $this->height = imagesy($this->image);
     }
 
+    public function getWidth()
+    {
+        return $this->width;
+    }
+
+    public function getHeight()
+    {
+        return $this->height;
+    }
+
     function __destruct()
     {
         if ($this->imageResized) {
@@ -87,10 +97,11 @@ class ResizeImage
         $optimalHeight = $optionArray['optimalHeight'];
 
         // *** Resample - create image canvas of x, y size
-        $this->imageResized = imagecreatetruecolor($optimalWidth, $optimalHeight);
 
+        $this->imageResized = imagecreatetruecolor($optimalWidth, $optimalHeight);
         imagealphablending($this->imageResized, false);
         imagesavealpha($this->imageResized, true);
+
         imagecopyresampled($this->imageResized, $this->image, 0, 0, 0, 0, $optimalWidth, $optimalHeight, $this->width, $this->height);
 
         // *** if option is 'crop', then crop too
@@ -237,11 +248,9 @@ class ResizeImage
 
         // *** Now crop from center to exact requested size
 
-        if ($this->image_type == IMAGETYPE_PNG) {
-            $this->imageResized = imagecreate($newWidth, $newHeight);
-        } else {
-            $this->imageResized = imagecreatetruecolor($newWidth, $newHeight);
-        }
+        $this->imageResized = imagecreatetruecolor($newWidth, $newHeight);
+        imagealphablending($this->imageResized, false);
+        imagesavealpha($this->imageResized, true);
 
         imagecopyresampled($this->imageResized, $crop, 0, 0, $cropStartX, $cropStartY, $newWidth, $newHeight, $newWidth, $newHeight);
     }
@@ -272,6 +281,7 @@ class ResizeImage
                 if (imagetypes() & IMG_PNG) {
                     imagepng($this->imageResized, $savePath);
                 }
+
                 break;
         }
     }

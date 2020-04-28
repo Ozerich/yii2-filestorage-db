@@ -78,8 +78,8 @@ class ImageService
         $height = $thumbnail->getHeight();
 
         if ($is_2x) {
-            $width *= 2;
-            $height *= 2;
+            $width = $image->getWidth() < ($width * 2) ? max($width, $image->getWidth()) : $width * 2;
+            $height = $image->getWidth() < ($height * 2) ? max($height, $image->getHeight()) : $height * 2;
         }
 
         if ($thumbnail->getCrop()) {

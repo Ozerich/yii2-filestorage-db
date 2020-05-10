@@ -286,9 +286,12 @@
 
     function updateImagePriority(event, ui) {
         let values = [];
-        $('.widget-image__grid-cell').each(function () {
+        const container = $(event.target).parents('.widget-image');
+
+        $('.widget-image__grid-cell', container).each(function () {
             values.push($(this).attr('data-file-id'));
         });
-        $('.widget-image input[type=hidden]').val(values.filter(u => u).join(','));
+
+        $('input[type=hidden]', container).val(values.filter(u => u).join(','));
     }
 })();

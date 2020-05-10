@@ -18,6 +18,9 @@ class ImageWidget extends InputWidget
      * @var string
      */
     public $uploadUrl;
+    
+    /** @var bool */
+    public $draggable = false;
 
     /**
      * @var bool
@@ -131,7 +134,8 @@ class ImageWidget extends InputWidget
             'textInputsValue' => $this->textInputsAttribute ? $this->model->{$this->textInputsAttribute} : [],
             'textInputsName' => $textInputsName,
             'inputId' => $inputId,
-            'multiple' => $this->multiple
+            'multiple' => $this->multiple,
+            'draggable' => $this->draggable
         ]);
     }
 }

@@ -209,3 +209,11 @@
     outline: none;
 }
 
+#sortable-images{
+    width: 100%;
+}
+#sortable-images .widget-image__grid-cell{
+    float: left;
+    width: 33.33%;
+}
+

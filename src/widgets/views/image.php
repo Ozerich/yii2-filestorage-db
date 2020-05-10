@@ -9,6 +9,7 @@
  * @var string $textInputsAttribute
  * @var string $textInputsName
  * @var string $textInputsValue
+ * @var boolean $draggable
  */
 ?>
 <div class="widget-image">
@@ -20,7 +21,8 @@
             'models' => $models,
             'textInputsName' => $textInputsName,
             'textInputsValue' => $textInputsValue,
-            'inputId' => $inputId
+            'inputId' => $inputId,
+            'draggable' => $draggable
         ]); ?>
     <? else: ?>
         <?= $this->render('_image_single', [
